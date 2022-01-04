@@ -88,11 +88,6 @@ class _CategoryPageState extends State<CategoryPage>{
   }) {      
     return SafeArea(
       child: Scaffold(
-        /*
-        appBar: AppBar(
-          title: Text('asdf'),
-        ),
-        */
         body: CustomScrollView(
           physics: AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -114,6 +109,9 @@ class _CategoryPageState extends State<CategoryPage>{
                   )
                 ),
               ),
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(height: 15.0),
             ),
             SliverToBoxAdapter(
               child: ProductsFutureBuilder(context: context),

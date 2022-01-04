@@ -27,11 +27,16 @@ Widget CategoryCard ({
       Expanded(
         // flex: 2,
         child: Container(
-          child: Image.network(
-            "http://placehold.it/500x500",
-            height: 100.0,
-            // width: 200.0,
-            fit: BoxFit.cover,
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+            child: Image.network(
+              category.imgsrc[0],
+              height: 100.0,
+              // width: 200.0,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),
@@ -53,6 +58,11 @@ Widget CategoryCard ({
   return GestureDetector(
     onTap: () => goCategoryPage(),
     child: Container( 
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10.0),
+        )
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [ 

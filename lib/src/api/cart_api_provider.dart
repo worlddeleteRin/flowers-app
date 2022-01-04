@@ -53,6 +53,7 @@ class CartAPIProvider {
       "/carts/$cartId/items",
       data: body,
     );
+    print('response is ${response.data.toString()}');
     return response;
   }
 
