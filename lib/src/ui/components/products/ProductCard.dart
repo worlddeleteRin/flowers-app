@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/models/cart_model.dart';
 import 'package:myapp/src/models/catalogue_model.dart';
 import 'package:myapp/src/blocs/cart_bloc.dart';
+import 'package:myapp/src/ui/components/products/ProductActionsSnackbars.dart';
 import 'package:myapp/src/ui/components/products/ProductButtonLoading.dart';
 
 // local imports
@@ -30,6 +31,7 @@ class _ProductCardState extends State<ProductCard> {
     }
 
     addProductCartClick () async {
+      // ScaffoldMessenger.of(context).clearSnackBars();
       if (isCartButtonLoading) {
         return false;
       }
@@ -38,6 +40,11 @@ class _ProductCardState extends State<ProductCard> {
       // await Future.delayed(Duration(seconds: 1));
       await widget.product.addToCart();
       setIsCartAdding(false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        ProductAddedSnackBar(
+          product: widget.product,
+        )
+      );
     }
 
     removeProductCartClick ({

@@ -11,8 +11,8 @@ Widget HorizontalCategories({
   // const Map<String,dynamic> categories = {};
   final categoriesList = categories.map((category) =>
     Container(
-      margin: EdgeInsets.symmetric(horizontal: 5.0),
-      width: 150.0, 
+      margin: EdgeInsets.symmetric(horizontal: 10.0),
+      width: 110.0, 
       height: 100.0,
       child: CategoryCard(
         context: context,

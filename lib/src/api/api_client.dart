@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 class APIClient {
   String APIUrl = "http://0.0.0.0:8000";
-  // String APIUrl = "https://api.rollsberi-food.ru";
+  // String APIUrl = "http://api.flowers.fast-code.ru";
 
   Dio loadDef() {
     Dio _dio = new Dio();

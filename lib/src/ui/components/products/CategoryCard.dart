@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/models/catalogue_model.dart';
@@ -27,17 +28,24 @@ Widget CategoryCard ({
       Expanded(
         // flex: 2,
         child: Container(
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10.0),
-            ),
-            child: Image.network(
-              category.imgsrc[0],
-              height: 100.0,
-              // width: 200.0,
-              fit: BoxFit.cover,
+          width: 110.0,
+          height: 110.0,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: CachedNetworkImageProvider(
+                category.imgsrc[0],
+              )
             ),
           ),
+          /*
+          child: Image.network(
+            category.imgsrc[0],
+            height: 100.0,
+            width: 100.0,
+            fit: BoxFit.cover,
+          ),
+          */
         ),
       ),
     ],

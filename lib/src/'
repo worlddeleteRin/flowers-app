@@ -9,7 +9,6 @@ import 'package:myapp/src/ui/components/products/HorizontalCategories.dart';
 import 'package:myapp/src/ui/components/products/HorizontalProducts.dart';
 import 'package:myapp/src/ui/components/products/ProductsList.dart';
 import 'package:myapp/src/ui/pages/CartPage.dart';
-import 'package:myapp/src/ui/pages/CategoryPage.dart';
 
 // local imports
 import '../../blocs/catalogue_bloc.dart';
@@ -37,29 +36,6 @@ class _HomePageState extends State<HomePage>{
     await catalogueBloc.fetchProducts();
   }
 
-  goCataloguePage({ required BuildContext context }) {
-    Navigator.pushNamed(
-      context,
-      '/catalogue',
-    );
-  }
-
-  goCategoryPage({
-    required BuildContext context,
-    required String categoryId
-  }) {
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (BuildContext context) {
-          return CategoryPage(
-            categoryId: categoryId,
-          );
-        }
-      )
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -71,6 +47,11 @@ class _HomePageState extends State<HomePage>{
     }
 
       return Scaffold(
+        /*
+        navigationBar: CupertinoNavigationBar(
+          middle: Text('asdasdf'), 
+        ),
+        */
         appBar: AppBar(
           title: Text('Главная'),
           actions: [
@@ -91,7 +72,7 @@ class _HomePageState extends State<HomePage>{
                   child: NavigationTitle(
                     context: context,
                     title: "Каталог товаров",
-                    handleRouteClick: () => goCataloguePage(context: context),
+                    pageRouteName: '/catalogue',
                   ),
                 ),
               ),
@@ -114,14 +95,10 @@ class _HomePageState extends State<HomePage>{
                               categories: categories,
                             ),
                           ),
-
                           CategoriesProductsBuilder(
                             context: context,
                             categories: categories,
                           ),
-
-                          SizedBox(height: 10.0),
-
                         ],
                       ),
                     );
@@ -166,34 +143,18 @@ class _HomePageState extends State<HomePage>{
                 (product) => product.categories.any(
                   (category) => category.id == categories[index].id
                 )
-              ).take(10).toList();
-
-              if (categoryProducts.length == 0) {
-                return SizedBox();
-              }
+              ).toList().take(10);
 
               return Column(
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(left: 14.0),
-                    child: NavigationTitle(
-                      context: context,
-                      title: categories[index].name,
-                      navText: "В категорию",
-                      handleRouteClick: () => goCategoryPage(
-                        context: context,
-                        categoryId: categories[index].id,
-                      )
-                    ),
+                  NavigationTitle(
+                    context: context,
+                    title: "Some title here",
+                    pageRouteName: "/home",
                   ),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                    ),
-                    child: HorizontalProducts(
-                      context: context,
-                      products: categoryProducts,
-                    ),
+                  HorizontalProducts(
+                    context: context,
+                    products: categoryProducts,
                   ),
                 ],
               );

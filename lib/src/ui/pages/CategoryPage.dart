@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/catalogue_bloc.dart';
 import 'package:myapp/src/models/catalogue_model.dart';
+import 'package:myapp/src/ui/components/cart/CartIconBadge.dart';
 import 'package:myapp/src/ui/components/common/MainSliverRefreshControl.dart';
 import 'package:myapp/src/ui/components/common/PageLoadingCenter.dart';
 import 'package:myapp/src/ui/components/products/ProductsList.dart';
+import 'package:rxdart/rxdart.dart';
 
 class CategoryPage extends StatefulWidget {
   final String categoryId;
@@ -18,48 +20,52 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage>{
 
-  var _category = null;
-  var _categoryProducts = null;
+  BehaviorSubject _categoryFetcher = BehaviorSubject();
+  BehaviorSubject _categoryProductsFetcher = BehaviorSubject();
 
-  setCategory (category) {
-    setState(() => _category = category);
+  Stream get category => _categoryFetcher.stream;
+  Stream get categoryProducts => _categoryProductsFetcher.stream;
+
+  bool _categoryInfoFetched = false;
+  bool _categoryProductsFetched = false;
+
+
+  setCategoryFetched (bool isFetched) {
+    setState(() => _categoryInfoFetched = isFetched);
   }
 
-  setCategoryProducts (categoryProducts) {
-    setState(() => _categoryProducts = categoryProducts);
+  setCategoryProductsFetched (bool isFetched) {
+    setState(() => _categoryProductsFetched = isFetched);
   }
-
 
   refreshCategoryPage () async {
-    // await loadCategoryPageInfo();
-    setCategoryProducts(null);
-    setCategory(null);
+    setCategoryFetched(false);
+    setCategoryProductsFetched(false);
   }
 
-  loadCategoryPageInfo () async {
-    print('run category get page info');
-    if (_category != null) {
-      return _category;
-    }
+  fetchCategoryInfo () async {
+    setCategoryFetched(true);
     Category currentCategory = await catalogueBloc.fetchCategoryById(widget.categoryId);
-    setCategory(currentCategory);
-    return _category;
+    _categoryFetcher.sink.add(currentCategory);
   }
 
-  loadCategoryProducts () async {
-    print('run get category products');   
-    if (_categoryProducts != null) {
-      return _categoryProducts;
-    }
+  fetchCategoryProducts () async {
+    setCategoryProductsFetched(true);
     List<Product> categoryProducts = await catalogueBloc.fetchCategoryProducts(widget.categoryId);
-    setCategoryProducts(categoryProducts);
-    return _categoryProducts;
+    _categoryProductsFetcher.sink.add(categoryProducts);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: loadCategoryPageInfo(),
+    if (!_categoryInfoFetched) {
+      fetchCategoryInfo();
+    }
+    if (!_categoryProductsFetched) {
+      fetchCategoryProducts();
+    }
+    return StreamBuilder(
+      stream: category,
+      // future: loadCategoryPageInfo(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData &
         (snapshot.data is Category)) {
@@ -89,33 +95,45 @@ class _CategoryPageState extends State<CategoryPage>{
     return SafeArea(
       child: Scaffold(
         body: CustomScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           slivers: [
-            MainSliverRefreshControl(
-              handleOnRefresh: () async => await refreshCategoryPage(),
-            ),
+
             SliverAppBar(
-              //snap: true,
-              //floating: true,
-              backgroundColor: Colors.transparent,
+              backgroundColor: Theme.of(context).primaryColor,
               pinned: true,
               title: Text('${category.name}'),
               expandedHeight: 220.0,
+              foregroundColor: Colors.white,
+              actions: [
+                CartIconBadge(
+                  context: context,
+                  iconColor: Colors.white,
+                ),
+              ],
               flexibleSpace: FlexibleSpaceBar(
                 background: Image(
                   fit: BoxFit.cover,
                   image: CachedNetworkImageProvider(
-                    "http://placehold.it/1000x1000"
+                    category.imgsrc[0],
                   )
                 ),
               ),
             ),
+
+            MainSliverRefreshControl(
+              handleOnRefresh: () async => await refreshCategoryPage(),
+            ),
+
             SliverToBoxAdapter(
               child: SizedBox(height: 15.0),
             ),
+
             SliverToBoxAdapter(
               child: ProductsFutureBuilder(context: context),
             )
+
           ]
         ),
       ),
@@ -125,8 +143,9 @@ class _CategoryPageState extends State<CategoryPage>{
   Widget ProductsFutureBuilder({
     required BuildContext context
   }) {
-    return FutureBuilder(
-      future: loadCategoryProducts(),
+
+    return StreamBuilder(
+      stream: categoryProducts,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) {
           return Text('error occurred...');

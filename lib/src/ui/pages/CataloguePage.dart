@@ -18,6 +18,10 @@ class CataloguePage extends StatelessWidget {
   @override 
   Widget build (BuildContext context) {
 
+  if (!catalogueBloc.categoriesFetched) {
+    catalogueBloc.fetchCategories();
+  }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Каталог товаров"),
@@ -27,7 +31,9 @@ class CataloguePage extends StatelessWidget {
       ),
       body: SafeArea(
         child: CustomScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           slivers: [
             MainSliverRefreshControl(
               handleOnRefresh: () async => await refreshCatalogue(),

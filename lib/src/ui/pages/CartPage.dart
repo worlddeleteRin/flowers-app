@@ -79,10 +79,10 @@ class _CartPageState extends State<CartPage> {
                   cart: cart
                 );
               } else {
-                return CartEmptyBlock();
+                return CartEmptyBlock(context: context);
               }
             }
-            return CartEmptyBlock();
+            return CartEmptyBlock(context: context);
           }
         )
 
@@ -124,11 +124,38 @@ class _CartPageState extends State<CartPage> {
                 lineItemId: lineItemId,
               ),
             ),
-          )
+          ),
+
+          SliverToBoxAdapter(
+            child: CartBottomMenu(
+              context: context,
+              cart: cart,
+            ),
+          ),
+
         ]
       ),
     );
 
+  }
+
+  Widget CartBottomMenu({
+    required BuildContext context,
+    required Cart cart,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          title: Text('Доставка без оповещения'),
+          trailing: CupertinoSwitch(
+            activeColor: Colors.black,
+            value: false,
+            onChanged: (value) {},
+          ),
+        )
+      ]
+    );
   }
 
 }

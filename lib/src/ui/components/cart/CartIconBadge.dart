@@ -7,11 +7,21 @@ import 'package:badges/badges.dart';
 
 Widget CartIconBadge({
   required BuildContext context,
+  Color iconColor = Colors.black,
+  Color backgroundColor = Colors.transparent,
 }) {
 
   Widget cartIcon = 
-  Icon(
-    Icons.shopping_cart
+  Container(
+    padding: EdgeInsets.all(5.0),
+    decoration: BoxDecoration(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(10.0),
+    ),
+    child: Icon(
+      Icons.shopping_cart,
+      color: iconColor,
+    ),
   );
 
   Widget badgeWidget = 

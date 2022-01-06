@@ -5,15 +5,15 @@ Widget NavigationTitle ({
   required BuildContext context,
   required String title,
   String navText = "Все",
-  required String pageRouteName,
+  required Function handleRouteClick,
 }) {
 
+  /*
   navigatePage () {
     Navigator.pushNamed(
       context,
       pageRouteName,
     );
-    /*
     Navigator.push(
       context,
       CupertinoPageRoute(
@@ -23,7 +23,6 @@ Widget NavigationTitle ({
       ),
     );
     */
-  }
 
   Widget titleBlock =
   Row(
@@ -48,7 +47,7 @@ Widget NavigationTitle ({
   Widget linkButtonBlock =
   TextButton(
     // padding: EdgeInsets.all(0),
-    onPressed: () { navigatePage(); },
+    onPressed: () { handleRouteClick(); },
     child: Row(
       children: [
         Container(

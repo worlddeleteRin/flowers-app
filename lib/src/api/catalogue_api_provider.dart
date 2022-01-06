@@ -26,7 +26,7 @@ class CatalogueAPIProvider {
 
   /// get all category products it's [categoryId]
   Future getCategoryProducts(String categoryId) async {
-    print('run get category products');
+    print('run get category products request');
     Response response = await client.get(
       "/products/categories/$categoryId/products"
     );
@@ -45,7 +45,7 @@ class CatalogueAPIProvider {
 
   /// get product with [productId] from api
   Future getProduct(String productId) async {
-    print('run get product function, product id is' + productId);
+    // print('run get product function, product id is' + productId);
     Response response = await client.get(
       "/products/$productId"
     );

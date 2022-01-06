@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:myapp/src/ui/components/common/PageLoadingCenter.dart';
 import 'package:myapp/src/ui/pages/CartPage.dart';
 import 'package:myapp/src/ui/pages/CataloguePage.dart';
-import 'package:myapp/src/ui/pages/CategoryPage.dart';
+import 'package:myapp/src/ui/pages/ProfilePage.dart';
+import 'package:myapp/src/ui/pages/StockPage.dart';
+// import 'package:myapp/src/ui/pages/CategoryPage.dart';
 import 'package:myapp/src/ui/theme/mainTheme.dart';
 // local imports
 import 'ui/pages/HomePage.dart';
@@ -22,10 +24,15 @@ class App extends StatefulWidget {
 
 
 class _AppState extends State<App> {
-  final GlobalKey<NavigatorState> rootPageOne = 
-  GlobalKey<NavigatorState>();
-  final GlobalKey<NavigatorState> rootPageTwo = 
-  GlobalKey<NavigatorState>();
+
+  var navigatorKeyList = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
+
+  var controller = CupertinoTabController(initialIndex: 0);
 
   int currentIndex = 0;
 
@@ -33,6 +40,8 @@ class _AppState extends State<App> {
     '/home': (context) => HomePage(),  
     '/cart': (context) => CartPage(),  
     '/catalogue': (context) => CataloguePage(),  
+    '/stocks': (context) => StockPage(),
+    '/profile': (context) => ProfilePage(),
     '/test': (context) => TestPage(),  
   };
 
@@ -75,11 +84,12 @@ class _AppState extends State<App> {
     required BuildContext context,
   }) {
     return CupertinoTabScaffold(
+      controller: controller,
       tabBar: CupertinoTabBar(
         currentIndex: currentIndex,
         onTap: (index) {
           if (currentIndex == index) {
-            rootPageOne.currentState?.popUntil((r) => r.isFirst); 
+            navigatorKeyList[index].currentState?.popUntil((r) => r.isFirst); 
           }
           currentIndex = index;
         },            
@@ -105,7 +115,7 @@ class _AppState extends State<App> {
           case 0:
             return CupertinoTabView(
               routes: appRoutes,
-              navigatorKey: rootPageOne, 
+              navigatorKey: navigatorKeyList[0], 
               builder: (BuildContext context) {
                 return HomePage();
               }
@@ -113,11 +123,28 @@ class _AppState extends State<App> {
           case 1:
             return CupertinoTabView(
               routes: appRoutes,
-              navigatorKey: rootPageTwo, 
+              navigatorKey: navigatorKeyList[1], 
               builder: (BuildContext context) {
                 return CataloguePage();
               }
             );
+          case 2:
+            return CupertinoTabView(
+              routes: appRoutes,
+              navigatorKey: navigatorKeyList[2], 
+              builder: (BuildContext context) {
+                return StockPage();
+              }
+            );
+          case 3:
+            return CupertinoTabView(
+              routes: appRoutes,
+              navigatorKey: navigatorKeyList[3], 
+              builder: (BuildContext context) {
+                return ProfilePage();
+              }
+            );
+
         }
         return TestPage();
       }

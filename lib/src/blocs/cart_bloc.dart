@@ -39,7 +39,7 @@ class CartBloc {
       sessionId: sessionId,
       cartItems: cartItems,
     );
-    print("created cart, response is ${response.data.toString()}");
+    // print("created cart, response is ${response.data.toString()}");
     processCartFromResponse(response);
   }
 
@@ -52,7 +52,7 @@ class CartBloc {
       "product_id": productId,
       "quantity": 1,
     };
-    print('line item is ${lineItem.toString()}');
+    // print('line item is ${lineItem.toString()}');
     if (_cartFetcher.hasValue & (_cartFetcher.valueOrNull is Cart)) {
       // print('cart fetcher value is ${_cartFetcher.valueOrNull}');
       Cart cart = _cartFetcher.value;
@@ -77,7 +77,7 @@ class CartBloc {
     print('run remove cart item');
     if (_cartFetcher.hasValue & (_cartFetcher.valueOrNull is Cart)) {
       Cart cart = _cartFetcher.value;
-      print('cart fetcher has value: ${_cartFetcher.value}');
+      // print('cart fetcher has value: ${_cartFetcher.value}');
       Response response = await cartAPIProvider.removeCartItem(
         cartId: cart.id,
         itemId: itemId,
@@ -93,7 +93,7 @@ class CartBloc {
     print('run update cart item');
     if (_cartFetcher.hasValue & (_cartFetcher.valueOrNull is Cart)) {
       Cart cart = _cartFetcher.value;
-      print('cart fetcher has value: ${_cartFetcher.value}');
+      // print('cart fetcher has value: ${_cartFetcher.value}');
       Response response = await cartAPIProvider.updateCartItem(
         cartId: cart.id,
         lineItem: lineItem,

@@ -101,6 +101,9 @@ class _ProductPageContentState extends State<ProductPageContent> {
             ),
             // height: mainContentHeight,
             child: CustomScrollView(
+              physics: BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
               slivers: [
                 MainSliverRefreshControl(
                   handleOnRefresh: () async => await refreshProductPage(),

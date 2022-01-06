@@ -50,6 +50,20 @@ TextButtonThemeData textButtonTheme = TextButtonThemeData(
   )
 );
 
+// outline button theme
+OutlinedButtonThemeData outlineButtonTheme = OutlinedButtonThemeData(
+  style: ButtonStyle(
+    foregroundColor: MaterialStateProperty.resolveWith<Color?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.pressed)) {
+          return buttonTextForegroundColor.withOpacity(0.7);
+        }
+        return buttonTextForegroundColor;
+      }
+    ),
+  )
+);
+
 // elevated button theme data
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ButtonStyle(
@@ -83,5 +97,6 @@ ThemeData mainTheme = ThemeData(
     textTheme: textTheme, 
     appBarTheme: appBarTheme,
     textButtonTheme: textButtonTheme,
+    outlinedButtonTheme: outlineButtonTheme,
     elevatedButtonTheme: elevatedButtonTheme,
 );

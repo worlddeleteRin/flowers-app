@@ -17,4 +17,12 @@ class AppAPIProvider {
     return response.data["session_id"];
   }
 
+  Future getStocks() async {
+    print('run get stocks');
+    Response response = await client.get(
+      "/site/stocks"
+    );
+    return response.data["stocks"];
+  }
+
 }

@@ -1,3 +1,4 @@
+import 'package:myapp/src/models/app_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api/app_api_provider.dart';
@@ -12,9 +13,14 @@ class AppBloc {
   AppAPIProvider appAPIProvider = AppAPIProvider();
 
   BehaviorSubject _sessionIdFetcher = BehaviorSubject();
+  BehaviorSubject _stocksFetcher = BehaviorSubject();
 
   Stream get sessionId => _sessionIdFetcher.stream;
   dynamic get sessionIdValue => _sessionIdFetcher.value;
+  Stream get stocks => _stocksFetcher.stream;
+
+
+  bool stocksFetched = false;
 
 
   /// check, if session id saved in `SharedPreferences`
@@ -45,6 +51,20 @@ class AppBloc {
       _sessionIdFetcher.sink.add(response_sessionId);
       return response_sessionId;
     } on Exception {
+      throw Exception();
+    }
+  }
+
+  Future fetchStocks () async {
+    try {
+      List stocksRaw = await appAPIProvider.getStocks(); 
+      List<StockItem> stocks = stocksRaw.map<StockItem>(
+        (item) => StockItem.fromJson(item)
+      ).toList();
+      _stocksFetcher.sink.add(stocks);
+      stocksFetched = true;
+    } on Exception {
+      stocksFetched = true;
       throw Exception();
     }
   }

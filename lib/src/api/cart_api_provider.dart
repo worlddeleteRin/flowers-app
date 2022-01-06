@@ -31,7 +31,7 @@ class CartAPIProvider {
     String body = json.encode({
       "line_items": cartItems,
     });
-    print('body is: ${body.toString()}');
+    // print('body is: ${body.toString()}');
     Response response = await client.post(
       "/carts/$sessionId",
       data: body,
@@ -48,12 +48,12 @@ class CartAPIProvider {
     String body = json.encode({
       "line_items": cartItems,
     });
-    print('body is: ${body.toString()}');
+    // print('body is: ${body.toString()}');
     Response response = await client.post(
       "/carts/$cartId/items",
       data: body,
     );
-    print('response is ${response.data.toString()}');
+    // print('response is ${response.data.toString()}');
     return response;
   }
 
@@ -82,7 +82,7 @@ class CartAPIProvider {
       "/carts/$cartId/items/${lineItem.id}",
       data: data,
     );
-    print('response is ${response.toString()}');
+    // print('response is ${response.toString()}');
     return response;
   }
 
