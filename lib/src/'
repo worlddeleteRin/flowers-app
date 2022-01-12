@@ -1,0 +1,67 @@
+import 'package:myapp/src/api/user_api_provider.dart';
+import 'package:myapp/src/models/user_model.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:dio/dio.dart';
+
+
+// import 'dart:convert';
+
+class UserBloc {
+
+  UserAPIProvider userAPIProvider = UserAPIProvider();
+
+  BehaviorSubject _authTokenFetcher = BehaviorSubject();
+  BehaviorSubject _userFetcher = BehaviorSubject();
+
+  Stream get authToken => _authTokenFetcher.stream;
+  Stream get user => _userFetcher.stream;
+
+  bool userFetched = false;
+
+  /// check, if auth token saved in `SharedPreferences`
+  /// with key `authToken`
+  /// If not saved previously - user was not logged in
+  /// Assign it to `_authTokenFetcher`
+  checkAuthTokenGetUser() async {
+    print('run check auth token and get user');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool authToken_exists = prefs.containsKey("authToken");
+    if (!authToken_exists) {
+      return;
+    }
+    String? savedAuthToken = prefs.getString("authToken");
+    _authTokenFetcher.sink.add(savedAuthToken);
+      // _sessionIdFetcher.sink.add(saved_sessionId);
+  }
+
+  fetchUserMe() async {
+    
+  }
+
+  Future<User?> getUserMe() async {
+    Response response = await userAPIProvider.getUserMe(
+      authToken: _authTokenFetcher.value 
+    );
+    User? user = processUserFromResponse(response);
+    return user;
+  }
+
+  User? processUserFromResponse(Response response) {
+    if (response.statusCode != 200) {
+      return null;
+    }
+    Map<String,dynamic> userData = response.data;
+    User user = User.fromJson(userData);
+    return user;
+  }
+  
+  dispose() {
+    _userFetcher.close();
+    _authTokenFetcher.close();
+  }
+
+}
+
+final userBloc = UserBloc();
