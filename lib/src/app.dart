@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/ui/components/common/PageLoadingCenter.dart';
 import 'package:myapp/src/ui/pages/CartPage.dart';
 import 'package:myapp/src/ui/pages/CataloguePage.dart';
@@ -53,6 +54,7 @@ class _AppState extends State<App> {
     print('get cart');
     await cartBloc.fetchCart();
     // await Future.delayed(Duration(seconds: 1));
+    await userBloc.checkAuthTokenGetUser();
     return true;
   }
 

@@ -11,6 +11,15 @@ class APIClient {
       "content-type": "application/json", 
       "App-Token": "some_access_token_is_here",
     };
+
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (DioError e, handler) {
+          handler.next(e);
+        }
+      )
+    );
+
     return _dio;
   }
 

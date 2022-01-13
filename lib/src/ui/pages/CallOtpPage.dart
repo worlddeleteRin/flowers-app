@@ -1,46 +1,32 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/user_model.dart';
 import 'package:myapp/src/ui/components/common/TitleBig.dart';
-import 'package:myapp/src/ui/pages/CallOtpPage.dart';
 
-class LoginPage extends StatelessWidget {
+class CallOtpPage extends StatelessWidget {
 
-  loginUser ({
-    required BuildContext context,
+  loginForAccessToken ({
+    required BuildContext context
   }) async {
-    bool is_success = await userBloc.loginUser();
+    bool is_success = await userBloc.loginForAccessToken();
     if (is_success) {
-      Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (BuildContext context) {
-            return CallOtpPage();
-          }
-        )
-      );
+      Navigator.of(context).popUntil((Route route) => route.isFirst);
     }
+    // return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
-        /*
-        appBar: AppBar(
-          title: Text('Авторизация')
-        ),
-        */
-        body: LoginPageContent(context: context)
+        body: CallOtpPageContent(context: context)
       ),
     );
   }
 
-  Widget LoginPageContent({
-    required BuildContext context,
+  Widget CallOtpPageContent({
+    required BuildContext context
   }) {
     return Container(
       margin: EdgeInsets.symmetric(
@@ -54,9 +40,9 @@ class LoginPage extends StatelessWidget {
           ),
 
           BottomSection(
-            handleClick: () async => await loginUser(
+            handleClick: () async => await loginForAccessToken(
               context: context
-            ),
+            )
           )
 
         ]
@@ -70,11 +56,11 @@ class LoginPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TitleBig(
-          title: "Вход в аккаунт"
+          title: "Код авторизации"
         ),
         SizedBox(height: 10.0),
         Text(
-          "Введите Ваш номер телефона. Вам позвонит случайный номер, последние 4 цифры которого необходимо будет указать в качестве кода",
+          "Введите последние 4 цифры номера телефона, который Вам позвонил",
           style: TextStyle(
             fontSize: 16.0,
             color: Colors.black,
@@ -85,40 +71,37 @@ class LoginPage extends StatelessWidget {
       ]
     );
   }
-  // Widget Login
+
   Widget LoginInputBuilder() {
     return StreamBuilder(
       stream: userBloc.userLoginForm,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        String itemValue = "7";
+        String itemValue = "";
         if (snapshot.hasData && 
         (snapshot.data is UserLoginForm)) {
           UserLoginForm userLoginForm = snapshot.data;
-          itemValue = userLoginForm.username; 
-          print('item value is ${userLoginForm.username}');
+          itemValue = userLoginForm.otp; 
+          print('item value is ${userLoginForm.otp}');
           return TextFormField(
             autofocus: true,
-            autofillHints: [AutofillHints.telephoneNumber],
-            maxLength: 11,
+            // autofillHints: [AutofillHints.telephoneNumber],
+            decoration: InputDecoration(
+              hintText: "****",
+              border: InputBorder.none,
+            ),
+            style: TextStyle(
+              fontSize: 38.0,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 10.0,
+            ), 
+            maxLength: 4,
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
-            decoration: InputDecoration(
-              hintText: "7978 111 11 11",
-              border: InputBorder.none,
-              icon: Icon(
-                Icons.add,
-                size: 33.0,
-                color: Colors.black,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 33.0,
-            ), 
             initialValue: itemValue,
-            keyboardType: TextInputType.phone,
+            keyboardType: TextInputType.number,
             onChanged: (value) {
-              userLoginForm.username = value;
+              userLoginForm.otp = value;
               userBloc.userLoginForm.sink.add(userLoginForm);  
             },
           );
@@ -141,7 +124,7 @@ class LoginPage extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => handleClick(),
               child: Text(
-                "Продолжить",
+                "Подтвердить",
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w700,

@@ -3,9 +3,24 @@
 //import 'package:myapp/src/models/catalogue_model.dart';
 // import 'package:myapp/src/blocs/cart_bloc.dart';
 
+class UserLoginForm {
+  String username; 
+  String password;
+  String otp;
+  String auth_type;
+
+  UserLoginForm({
+    this.username = "",
+    this.password = "",
+    this.otp = "",
+    this.auth_type = "call_otp"
+  });
+
+}
+
 class User {
   String id;
-  DateTime date_created;
+  String date_created;
   String email;
   String username;
   bool is_active;

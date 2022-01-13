@@ -14,11 +14,11 @@ class UserBloc {
 
   BehaviorSubject _authTokenFetcher = BehaviorSubject();
   BehaviorSubject _userFetcher = BehaviorSubject();
-  BehaviorSubject loginFormUsername = BehaviorSubject();
+  BehaviorSubject userLoginForm = BehaviorSubject<UserLoginForm>.seeded(UserLoginForm());
 
   Stream get authToken => _authTokenFetcher.stream;
   Stream get user => _userFetcher.stream;
-  Stream get loginFormUsernameStream => loginFormUsername.stream;
+  Stream get userLoginFormStream => userLoginForm.stream;
 
   bool userFetched = false;
 
@@ -26,6 +26,10 @@ class UserBloc {
   /// with key `authToken`
   /// If not saved previously - user was not logged in
   /// Assign it to `_authTokenFetcher`
+  /// try to fetch user, if `authToken` exists
+  /// if error occurred when fetching user `authToken`
+  /// will be removed from `SharedPreferences` storage
+  /// and `_authTokenFetcher`
   checkAuthTokenGetUser() async {
     print('run check auth token and get user');
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -35,31 +39,66 @@ class UserBloc {
     }
     String? savedAuthToken = prefs.getString("authToken");
     _authTokenFetcher.sink.add(savedAuthToken);
-      // _sessionIdFetcher.sink.add(saved_sessionId);
+    User? user = await getUserMe();
+    print('user is ${user}');
+    if (!(user is User)) {
+      prefs.remove("authToken");
+      _authTokenFetcher.sink.add(null);
+    } else {
+      _userFetcher.sink.add(user);
+    }
   }
 
-  loginUser({
-    required String username,
-    required String password,
-  }) async {
+  Future<bool> loginForAccessToken(
+    // required String username,
+    // required String password,
+  ) async {
+    UserLoginForm? loginForm = userLoginForm.valueOrNull;
+    if (!(loginForm is UserLoginForm)) {return false;};
     String? authToken = await loginGetAccessToken(
-      username: username,
-      password: password,
+      loginForm: loginForm
     );
-    if (authToken == null) { return; }
+    if (authToken == null) { return false; }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _authTokenFetcher.sink.add(authToken);
     await prefs.setString("authToken", authToken);
     await fetchUserMe();
+    User? user = _userFetcher.valueOrNull;
+    if (user is User) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> loginUser() async {
+    UserLoginForm? loginForm = userLoginForm.valueOrNull;
+    if (!(loginForm is UserLoginForm)) {return false;};
+    try {
+      Response response = await userAPIProvider.loginUser(
+        username: loginForm.username,
+        authType: loginForm.auth_type,
+      );
+      if (response.statusCode != 200) {return false;};
+      return true;
+    } on Exception {
+      return false;
+    }
+  }
+
+  logoutUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance(); 
+    await prefs.remove("authToken");
+    _userFetcher.sink.add(null);
   }
 
   Future<String?> loginGetAccessToken({
-    required String username,
-    required String password,
+    required UserLoginForm loginForm
   }) async  {
     Response response = await userAPIProvider.loginGetAccessToken(
-      username: username,
-      password: password
+      username: loginForm.username,
+      password: loginForm.password, 
+      otp: loginForm.otp,
+      authType: loginForm.auth_type,
     );
     if (response.statusCode != 200) {return null;};
     Map<String,dynamic> responseData = response.data;
@@ -75,6 +114,7 @@ class UserBloc {
     if (!(user is User)) {
       return null;
     }
+    print('add user to fetcer, user is $user');
     _userFetcher.sink.add(user);
   }
 
@@ -83,11 +123,16 @@ class UserBloc {
   Future<User?> getUserMe() async {
     String? authToken = _authTokenFetcher.valueOrNull;
     if (authToken == null) {return null;};
-    Response response = await userAPIProvider.getUserMe(
-      authToken: _authTokenFetcher.value 
-    );
-    User? user = processUserFromResponse(response);
-    return user;
+    try {
+      Response response = await userAPIProvider.getUserMe(
+        authToken: _authTokenFetcher.value 
+      );
+      print('user response is $response');
+      User? user = processUserFromResponse(response);
+      return user;
+    } on Exception {
+      return null;
+    }
   }
 
   /// process user data from response
