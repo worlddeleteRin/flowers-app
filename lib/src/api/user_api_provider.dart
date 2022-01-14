@@ -72,4 +72,20 @@ class UserAPIProvider {
     return response;
   }
 
+  /// get orders for current user
+  Future<Response> getUserOrders({
+    required String authToken,
+  }) async {
+    print('run get user orders');
+    Response response = await client.get(
+      "/users/me/orders",
+      options: Options(
+        headers: {
+          'authorization': 'Bearer $authToken'
+        }
+      )
+    );
+    return response;
+  }
+
 }

@@ -135,6 +135,23 @@ class UserBloc {
     }
   }
 
+  /// call api to get user orders, 
+  /// if `authToken` exists
+  getUserOrders() async {
+    String? authToken = _authTokenFetcher.valueOrNull;
+    if (authToken == null) {return null;};
+    try {
+      Response response = await userAPIProvider.getUserOrders(
+        authToken: _authTokenFetcher.value 
+      );
+      print('user response is $response');
+      User? user = processUserFromResponse(response);
+      return user;
+    } on Exception {
+      return null;
+    }
+  }
+
   /// process user data from response
   /// returns User object | null
   User? processUserFromResponse(Response response) {
