@@ -1,4 +1,5 @@
 import 'package:myapp/src/api/user_api_provider.dart';
+import 'package:myapp/src/models/orders_model.dart';
 import 'package:myapp/src/models/user_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,13 +15,16 @@ class UserBloc {
 
   BehaviorSubject _authTokenFetcher = BehaviorSubject();
   BehaviorSubject _userFetcher = BehaviorSubject();
+  BehaviorSubject _userOrdersFetcher = BehaviorSubject();
   BehaviorSubject userLoginForm = BehaviorSubject<UserLoginForm>.seeded(UserLoginForm());
 
   Stream get authToken => _authTokenFetcher.stream;
   Stream get user => _userFetcher.stream;
+  Stream get userOrders => _userOrdersFetcher.stream;
   Stream get userLoginFormStream => userLoginForm.stream;
 
   bool userFetched = false;
+  bool userOrdersFetched = false;
 
   /// check, if auth token saved in `SharedPreferences`
   /// with key `authToken`
@@ -118,6 +122,13 @@ class UserBloc {
     _userFetcher.sink.add(user);
   }
 
+  fetchUserOrders() async {
+    List<Order>? ordersList = await getUserOrders();
+    this.userOrdersFetched = true;
+    if (!(ordersList is List<Order>)) {return null;};
+    _userOrdersFetcher.sink.add(ordersList);
+  }
+
   /// call api to get user, if `authToken` exists
   /// or return null 
   Future<User?> getUserMe() async {
@@ -137,21 +148,36 @@ class UserBloc {
 
   /// call api to get user orders, 
   /// if `authToken` exists
-  getUserOrders() async {
+  Future<List<Order>?> getUserOrders() async {
     String? authToken = _authTokenFetcher.valueOrNull;
     if (authToken == null) {return null;};
     try {
       Response response = await userAPIProvider.getUserOrders(
         authToken: _authTokenFetcher.value 
       );
-      print('user response is $response');
-      User? user = processUserFromResponse(response);
-      return user;
+      List<Order>? ordersList = processUserOrdersFromResponse(response);
+      return ordersList;
     } on Exception {
       return null;
     }
   }
 
+  
+  /// process user orders from response
+  /// return Orders list | null
+  List<Order>? processUserOrdersFromResponse(Response response) {
+    if (response.statusCode != 200) {return null;}
+    try {
+      List ordersRawList = response.data['orders'];
+      print('orders raw list is $ordersRawList');
+      List<Order> ordersList = ordersRawList.map<Order>(
+      (orderItem) => Order.fromJson(orderItem)
+      ).toList();
+      return ordersList;
+    } on Exception {
+      return null;
+    }
+  }
   /// process user data from response
   /// returns User object | null
   User? processUserFromResponse(Response response) {
