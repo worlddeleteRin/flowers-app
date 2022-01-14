@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/user_model.dart';
-import 'package:myapp/src/ui/components/common/SelectableListTile.dart';
+// import 'package:myapp/src/ui/components/common/SelectableListTile.dart';
 import 'package:myapp/src/ui/components/common/SimpleMenuTile.dart';
 import 'package:myapp/src/ui/components/common/TitleBig.dart';
+import 'package:myapp/src/ui/pages/ProfileOrdersPage.dart';
 import 'package:myapp/src/ui/pages/ProfileSettingsPage.dart';
 
 class UserAccountPage extends StatelessWidget {
@@ -21,6 +22,19 @@ class UserAccountPage extends StatelessWidget {
       CupertinoPageRoute(
         builder: (BuildContext context) {
           return ProfileSettingsPage();
+        }
+      )
+    );
+  }
+
+  goProfileOrdersPage({
+    required BuildContext context
+  }) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (BuildContext context) {
+          return ProfileOrdersPage();
         }
       )
     );
@@ -132,7 +146,9 @@ class UserAccountPage extends StatelessWidget {
           title: "Настройки",
         ),
         SimpleMenuTile(
-          handleTap: () {},
+          handleTap: () => goProfileOrdersPage(
+            context: context
+          ),
           title: "Заказы",
         ),
         SimpleMenuTile(
