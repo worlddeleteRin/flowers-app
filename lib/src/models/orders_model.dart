@@ -93,21 +93,30 @@ class Order {
   });
 
   factory Order.fromJson(Map<String,dynamic> json) {
+
     Cart orderCart = Cart.fromJson(json['cart']); 
+
     OrderStatus orderStatus = OrderStatus.fromJson(
       json['status']
     );
-    PaymentMethod? orderPaymentMethod = PaymentMethod.fromJson(
+
+    PaymentMethod orderPaymentMethod = PaymentMethod.fromJson(
       json['payment_method']
     );
-    DeliveryMethod? orderDeliveryMethod = DeliveryMethod.fromJson(
+
+    DeliveryMethod orderDeliveryMethod = DeliveryMethod.fromJson(
       json['delivery_method']
     );
+
     UserDeliveryAddress? orderDeliveryAddress = 
+    json['delivery_address'] == null ?
+    null:
     UserDeliveryAddress.fromJson(json['delivery_address']);
-    PickupAddress orderPickupAddress = PickupAddress.fromJson(
-      json['pickup_address']
-    );
+
+    PickupAddress? orderPickupAddress = 
+    json['pickup_address'] == null ?
+    null:
+    PickupAddress.fromJson( json['pickup_address']);
 
     return Order(
       cart: orderCart, 
