@@ -1,25 +1,28 @@
 import 'package:myapp/src/models/cart_model.dart';
+import 'package:myapp/src/models/common_model.dart';
 import 'package:myapp/src/models/user_model.dart';
 
 class OrderStatus {
   String id;
   String name;
   String name_display;
-  String color;
+  ColorARGB color;
 
   OrderStatus({
     required this.id,
     required this.name,
     required this.name_display,
-    required this.color,
+    required this.color
   });
 
   factory OrderStatus.fromJson(Map<String,dynamic> json) {
+    ColorARGB orderStatusColor = 
+    ColorARGB.fromJson(json['color']);
     return OrderStatus(
       id: json['id'],
       name: json['name'],
       name_display: json['name_display'],
-      color: json['color']
+      color: orderStatusColor,
     );
   }
 }
