@@ -1,5 +1,3 @@
-// import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:myapp/src/models/catalogue_model.dart';
@@ -7,13 +5,12 @@ import 'package:myapp/src/ui/components/cart/CartIconBadge.dart';
 import 'package:myapp/src/ui/components/common/NavigationTitle.dart';
 import 'package:myapp/src/ui/components/products/HorizontalCategories.dart';
 import 'package:myapp/src/ui/components/products/HorizontalProducts.dart';
-import 'package:myapp/src/ui/components/products/ProductsList.dart';
-import 'package:myapp/src/ui/pages/CartPage.dart';
+// import 'package:myapp/src/ui/components/products/ProductsList.dart';
+// import 'package:myapp/src/ui/pages/CartPage.dart';
 import 'package:myapp/src/ui/pages/CategoryPage.dart';
 
 // local imports
 import '../../blocs/catalogue_bloc.dart';
-
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key:key);
