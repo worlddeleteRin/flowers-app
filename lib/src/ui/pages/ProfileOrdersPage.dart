@@ -16,22 +16,28 @@ class ProfileOrdersPage extends StatelessWidget {
         appBar: AppBar(
           title: Text('Мои заказы'),
         ),
-        body: StreamBuilder(
-          stream: userBloc.userOrders,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError) {
-              return Text('error occurred');
+        body: Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: 14.0,
+            vertical: 10.0,
+          ),
+          child: StreamBuilder(
+            stream: userBloc.userOrders,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasError) {
+                return Text('error occurred');
+              }
+              if (snapshot.hasData &
+              (snapshot.data is List<Order>)) {
+                List<Order> ordersList = snapshot.data;
+                return ProfileOrdersPageContent(
+                  context: context,
+                  orders: ordersList
+                );
+              }
+              return Text('no info from orders stream');
             }
-            if (snapshot.hasData &
-            (snapshot.data is List<Order>)) {
-              List<Order> ordersList = snapshot.data;
-              return ProfileOrdersPageContent(
-                context: context,
-                orders: ordersList
-              );
-            }
-            return Text('no info from orders stream');
-          }
+          ),
         ),
       )
     );
