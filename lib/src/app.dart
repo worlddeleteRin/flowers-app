@@ -23,7 +23,6 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
 
-
 class _AppState extends State<App> {
 
   var navigatorKeyList = [
