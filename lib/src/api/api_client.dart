@@ -15,6 +15,7 @@ class APIClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onError: (DioError e, handler) {
+          print('${e.response?.data}');
           handler.next(e);
         }
       )

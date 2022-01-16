@@ -105,7 +105,7 @@ class UserOrderCard extends StatelessWidget {
     return Container(
       height: 80.0,
       child: ListView(
-        physics: AlwaysScrollableScrollPhysics(),
+        // physics: AlwaysScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
         children: imagesList,
       ),

@@ -3,6 +3,8 @@
 //import 'package:myapp/src/models/catalogue_model.dart';
 // import 'package:myapp/src/blocs/cart_bloc.dart';
 
+import 'package:dio/dio.dart';
+
 class UserLoginForm {
   String username; 
   String password;
@@ -53,6 +55,20 @@ class UserDeliveryAddress {
       address_display: json['address_display'], 
       comment: json['comment'], 
     );
+  }
+
+  static List<UserDeliveryAddress>? 
+  processAddressesFromResponse (Response response) {
+    if (response.statusCode != 200) {return null;};
+    try {
+      List<UserDeliveryAddress>? userDeliveryAddresses = 
+      response.data.map<UserDeliveryAddress>((addressItem) =>
+        UserDeliveryAddress.fromJson(addressItem)
+      ).toList();
+      return userDeliveryAddresses;
+    } on Exception {
+      return null;
+    }
   }
 }
 

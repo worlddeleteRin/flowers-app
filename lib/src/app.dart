@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
+import 'package:myapp/src/models/user_model.dart';
 import 'package:myapp/src/ui/components/common/PageLoadingCenter.dart';
 import 'package:myapp/src/ui/pages/CartPage.dart';
 import 'package:myapp/src/ui/pages/CataloguePage.dart';
@@ -32,6 +33,9 @@ class _AppState extends State<App> {
     GlobalKey<NavigatorState>(),
   ];
 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
   var controller = CupertinoTabController(initialIndex: 0);
 
   int currentIndex = 0;
@@ -61,13 +65,13 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: mainTheme,
-      // routes: appRoutes,
       home: Scaffold(
+        key: _scaffoldKey,
         body: FutureBuilder(
           future: initializeApp(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
-              return MainTabScaffold(context: context);
+              return MainScaffold(context: context);
             }
             if (snapshot.hasError) {
               return Center(
@@ -77,6 +81,16 @@ class _AppState extends State<App> {
             return PageLoadingCenter();
           }
         )
+      ),
+    );
+  }
+
+  Widget MainScaffold({
+    required BuildContext context,
+  }) {
+    return Scaffold(
+      body: MainTabScaffold(
+        context: context,
       ),
     );
   }

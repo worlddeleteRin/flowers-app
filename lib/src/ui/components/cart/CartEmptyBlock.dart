@@ -5,10 +5,13 @@ Widget CartEmptyBlock ({
 }) {
 
   goCataloguePage() {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    /*
     Navigator.pushNamed(
       context, 
       '/home',
     );
+    */
   }
 
   Widget emptyTitleBlock =

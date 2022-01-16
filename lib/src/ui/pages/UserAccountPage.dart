@@ -5,6 +5,7 @@ import 'package:myapp/src/models/user_model.dart';
 // import 'package:myapp/src/ui/components/common/SelectableListTile.dart';
 import 'package:myapp/src/ui/components/common/SimpleMenuTile.dart';
 import 'package:myapp/src/ui/components/common/TitleBig.dart';
+import 'package:myapp/src/ui/components/user/ProfileDeliveryAddresses.dart';
 import 'package:myapp/src/ui/pages/ProfileOrdersPage.dart';
 import 'package:myapp/src/ui/pages/ProfileSettingsPage.dart';
 
@@ -14,27 +15,15 @@ class UserAccountPage extends StatelessWidget {
     required this.user
   });
 
-  goProfileSettingsPage({
-    required BuildContext context
+  goPage({
+    required BuildContext context,
+    required StatelessWidget page
   }) {
     Navigator.push(
       context,
       CupertinoPageRoute(
         builder: (BuildContext context) {
-          return ProfileSettingsPage();
-        }
-      )
-    );
-  }
-
-  goProfileOrdersPage({
-    required BuildContext context
-  }) {
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (BuildContext context) {
-          return ProfileOrdersPage();
+          return page;
         }
       )
     );
@@ -140,19 +129,24 @@ class UserAccountPage extends StatelessWidget {
       runSpacing: 10.0,
       children: [
         SimpleMenuTile(
-          handleTap: () => goProfileSettingsPage(
-            context: context
+          handleTap: () => goPage(
+            context: context,
+            page: ProfileSettingsPage(),
           ),
           title: "Настройки",
         ),
         SimpleMenuTile(
-          handleTap: () => goProfileOrdersPage(
-            context: context
+          handleTap: () => goPage(
+            context: context,
+            page: ProfileOrdersPage(),
           ),
           title: "Заказы",
         ),
         SimpleMenuTile(
-          handleTap: () {},
+          handleTap: () => goPage(
+            context: context,
+            page: ProfileDeliveryAddresses()
+          ),
           title: "Мои адреса",
         ),
         SimpleMenuTile(

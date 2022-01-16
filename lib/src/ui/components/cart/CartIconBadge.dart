@@ -54,8 +54,9 @@ Widget CartIconBadge({
 
   Widget icon = TextButton(
     onPressed: () {
+      BuildContext mainContext = Scaffold.of(context).context;
       Navigator.push(
-        context,
+        mainContext,
         CupertinoPageRoute(
           builder: (BuildContext context) =>
           CartPage(),

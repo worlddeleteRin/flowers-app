@@ -16,15 +16,22 @@ class UserBloc {
   BehaviorSubject _authTokenFetcher = BehaviorSubject();
   BehaviorSubject _userFetcher = BehaviorSubject();
   BehaviorSubject _userOrdersFetcher = BehaviorSubject();
+  BehaviorSubject _userDeliveryAddresses = BehaviorSubject();
   BehaviorSubject userLoginForm = BehaviorSubject<UserLoginForm>.seeded(UserLoginForm());
 
   Stream get authToken => _authTokenFetcher.stream;
   Stream get user => _userFetcher.stream;
   Stream get userOrders => _userOrdersFetcher.stream;
+  Stream get userDeliveryAddresses => _userDeliveryAddresses.stream;
   Stream get userLoginFormStream => userLoginForm.stream;
+
+  User? get userLastValue => _userFetcher.valueOrNull;
+  String? get authTokenLastValue => _authTokenFetcher.valueOrNull;
+  List<UserDeliveryAddress>? get userDeliveryAddressesLastValue => _userDeliveryAddresses.valueOrNull;
 
   bool userFetched = false;
   bool userOrdersFetched = false;
+  bool userDeliveryAddressesFetched = false;
 
   /// check, if auth token saved in `SharedPreferences`
   /// with key `authToken`
@@ -42,12 +49,12 @@ class UserBloc {
       return;
     }
     String? savedAuthToken = prefs.getString("authToken");
+    if (!(savedAuthToken is String)) {return;};
     _authTokenFetcher.sink.add(savedAuthToken);
     User? user = await getUserMe();
     print('user is ${user}');
     if (!(user is User)) {
       prefs.remove("authToken");
-      _authTokenFetcher.sink.add(null);
     } else {
       _userFetcher.sink.add(user);
     }
@@ -92,7 +99,10 @@ class UserBloc {
   logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance(); 
     await prefs.remove("authToken");
+    // _userFetcher.addError("some error");
     _userFetcher.sink.add(null);
+    _authTokenFetcher.sink.add(null);
+    // _userFetcher.close();
   }
 
   Future<String?> loginGetAccessToken({
@@ -129,6 +139,13 @@ class UserBloc {
     _userOrdersFetcher.sink.add(ordersList);
   }
 
+  fetchUserDeliveryAddresses() async {
+    List<UserDeliveryAddress>? userAddresses = await getUserDeliveryAddresses();
+    this.userDeliveryAddressesFetched = true;
+    if (!(userAddresses is List<UserDeliveryAddress>)) {return null;};
+    _userDeliveryAddresses.sink.add(userAddresses);
+  }
+
   /// call api to get user, if `authToken` exists
   /// or return null 
   Future<User?> getUserMe() async {
@@ -157,6 +174,23 @@ class UserBloc {
       );
       List<Order>? ordersList = processUserOrdersFromResponse(response);
       return ordersList;
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// call api to get user delivery addresses, 
+  /// if `authToken` exists
+  Future<List<UserDeliveryAddress>?> getUserDeliveryAddresses() async {
+    String? authToken = authTokenLastValue;
+    if (authToken == null) {return null;};
+    try {
+      Response response = await userAPIProvider.getUserDeliveryAddresses(
+        authToken: authToken, 
+      );
+      List<UserDeliveryAddress>? userDeliveryAddresses = 
+      UserDeliveryAddress.processAddressesFromResponse(response);
+      return userDeliveryAddresses;
     } on Exception {
       return null;
     }

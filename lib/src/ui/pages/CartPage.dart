@@ -146,10 +146,11 @@ class _CartPageState extends State<CartPage> {
           Container(
             child: CartBottomSheet(
               handleGoCheckout: () {
+                BuildContext mainContext = Scaffold.of(context).context;
                 Navigator.push(
-                  context, 
+                  mainContext,
                   CupertinoPageRoute(
-                    builder: (BuildContext context) {
+                    builder: (BuildContext mainContext) {
                       return CheckoutPage();
                     }
                   )

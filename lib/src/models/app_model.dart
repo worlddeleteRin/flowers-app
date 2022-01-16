@@ -3,6 +3,13 @@
 import 'package:myapp/src/models/catalogue_model.dart';
 
 import 'package:myapp/src/blocs/cart_bloc.dart';
+import 'package:myapp/src/models/orders_model.dart';
+
+class CheckoutFormInfo {
+  DeliveryMethod? delivery_method;
+  PaymentMethod? payment_method;
+  PickupAddress? pickup_address;
+}
 
 class StockItem {
   String id;

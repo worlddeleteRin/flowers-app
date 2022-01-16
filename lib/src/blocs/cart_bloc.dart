@@ -1,4 +1,4 @@
-import 'package:myapp/src/models/catalogue_model.dart';
+// import 'package:myapp/src/models/catalogue_model.dart';
 import 'package:rxdart/rxdart.dart';
 import '../api/cart_api_provider.dart';
 
@@ -16,6 +16,8 @@ class CartBloc {
 
   Stream get cart => _cartFetcher.stream;
 
+  Cart? get cartLastValue => _cartFetcher.valueOrNull;
+
   /// fetch cart from api for `sessionId`
   fetchCart() async {
     String sessionId = appBloc.sessionIdValue;
@@ -25,6 +27,7 @@ class CartBloc {
       );
       processCartFromResponse(response);
     } on Exception {
+      _cartFetcher.sink.add(null);
       return Exception();
     }
   }
@@ -106,6 +109,7 @@ class CartBloc {
   /// assign only if `response.statusCode == 200`
   processCartFromResponse(Response response) {
     if (response.statusCode != 200) {
+      _cartFetcher.sink.add(null);
       return null;
     }
     Map<String,dynamic> data = response.data;

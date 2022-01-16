@@ -88,4 +88,20 @@ class UserAPIProvider {
     return response;
   }
 
+  /// get current user delivery addresses 
+  Future<Response> getUserDeliveryAddresses({
+    required String authToken,
+  }) async {
+    print('run get user delivery addresses');
+    Response response = await client.get(
+      "/users/me/delivery-address",
+      options: Options(
+        headers: {
+          'authorization': 'Bearer $authToken'
+        }
+      )
+    );
+    return response;
+  }
+
 }

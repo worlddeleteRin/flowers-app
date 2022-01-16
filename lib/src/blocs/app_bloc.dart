@@ -1,4 +1,5 @@
 import 'package:myapp/src/models/app_model.dart';
+import 'package:myapp/src/models/orders_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api/app_api_provider.dart';
@@ -14,13 +15,16 @@ class AppBloc {
 
   BehaviorSubject _sessionIdFetcher = BehaviorSubject();
   BehaviorSubject _stocksFetcher = BehaviorSubject();
+  BehaviorSubject _checkoutInfoFetcher = BehaviorSubject();
 
+  Stream get checkoutInfo => _checkoutInfoFetcher.stream;
   Stream get sessionId => _sessionIdFetcher.stream;
   dynamic get sessionIdValue => _sessionIdFetcher.value;
   Stream get stocks => _stocksFetcher.stream;
 
 
   bool stocksFetched = false;
+  bool checkoutInfoFetched = false;
 
 
   /// check, if session id saved in `SharedPreferences`
@@ -66,6 +70,19 @@ class AppBloc {
     } on Exception {
       stocksFetched = true;
       throw Exception();
+    }
+  }
+
+  Future fetchCheckoutInfo () async {
+    try {
+      Response response = await appAPIProvider.getCheckoutInfo();
+      CheckoutInfo? checkoutInfo = CheckoutInfo.processFromResponse(response);
+      if (!(checkoutInfo is CheckoutInfo)) {return null;}
+      _checkoutInfoFetcher.sink.add(checkoutInfo);
+      checkoutInfoFetched = true;
+    } on Exception {
+      checkoutInfoFetched = true;
+      return null;
     }
   }
 

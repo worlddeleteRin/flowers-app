@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/orders_model.dart';
+import 'package:myapp/src/ui/components/common/MainSliverRefreshControl.dart';
 import 'package:myapp/src/ui/components/orders/UserOrderCard.dart';
 
 class ProfileOrdersPage extends StatelessWidget {
+
+  refreshUserOrders () async {
+    await userBloc.fetchUserOrders();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +52,35 @@ class ProfileOrdersPage extends StatelessWidget {
     required BuildContext context,
     required List<Order> orders,
   }) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: orders.length,
-      itemBuilder: (BuildContext context, int index)  {
-        return UserOrderCard(
-          order: orders[index] 
-        );
-      }
+    return CustomScrollView(
+      physics: BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics()
+      ),
+      slivers: [
+        MainSliverRefreshControl(
+          handleOnRefresh: () async => 
+          await refreshUserOrders(),
+        ),
+        SliverToBoxAdapter(
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: orders.length,
+            itemBuilder: (BuildContext context, int index)  {
+              return Container(
+                margin: EdgeInsets.symmetric(
+                  vertical: 7.0,
+                ),
+                child: UserOrderCard(
+                  order: orders[index] 
+                ),
+              );
+            }
+          ),
+        )
+      ]
     );
+
   }
 
 }

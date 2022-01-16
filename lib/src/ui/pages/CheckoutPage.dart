@@ -1,15 +1,60 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/src/blocs/app_bloc.dart';
+import 'package:myapp/src/blocs/order_bloc.dart';
+import 'package:myapp/src/models/app_model.dart';
+import 'package:myapp/src/ui/components/checkout/SelectDeliveryMethod.dart';
+import 'package:myapp/src/ui/components/checkout/SelectPaymentMethod.dart';
+import 'package:myapp/src/ui/components/common/DraggableBaseSelectBottomSheet.dart';
 import 'package:myapp/src/ui/components/common/SelectableListTile.dart';
+import 'package:myapp/src/ui/components/common/SimpleBottomActionContainer.dart';
 
 class CheckoutPage extends StatelessWidget {
+
+  createOrder({
+    required BuildContext context
+  }) async {
+    bool isSuccess = await orderBloc.createOrder();
+    if (isSuccess) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('заказ создан')
+        ),
+      );
+    }
+  }
+
+  openSelectBottomSheet({
+    required BuildContext context,
+    required StatelessWidget contentWidget,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return DraggableBaseSelectBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return contentWidget;
+          },
+        );
+      }
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Оформление заказа"),
-        ),
-        body: CheckoutPageContent(
+
+    if (!appBloc.checkoutInfoFetched) {
+      appBloc.fetchCheckoutInfo();
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Оформление заказа"),
+      ),
+      body: SafeArea(
+        child: CheckoutPageContent(
           context: context
         )
       ),
@@ -30,9 +75,13 @@ class CheckoutPage extends StatelessWidget {
               context: context
             )
           ),
-          CheckoutBottomSheet(
-            handleClick: () => {},
-          ),
+          SimpleBottomActionContainer(
+            handleClick: () async => 
+            await createOrder(
+              context: context
+            ), 
+            buttonTitle: "Оформить заказ"
+          )
         ]
       ),
     );
@@ -48,43 +97,20 @@ class CheckoutPage extends StatelessWidget {
         ),
         slivers: [
           SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SelectableListTile(
-                  handleTap: () => {}, 
-                  title: "Получатель",
-                  trailingBody: Text('Заказ для меня')
-                ),
-                SelectableListTile(
-                  handleTap: () => {}, 
-                  title: "Адрес доставки",
-                  trailingBody: Text('Выбрать')
-                ),
-                SelectableListTile(
-                  handleTap: () => {}, 
-                  title: "Время доставки",
-                  trailingBody: Text('Выбрать')
-                ),
-                SelectableListTile(
-                  handleTap: () => {}, 
-                  title: "Заметки к заказу",
-                  trailingBody: Text('Добавить')
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  "Оплата",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18.0,
-                  )
-                ),
-                SelectableListTile(
-                  handleTap: () => {}, 
-                  title: "Способ оплаты",
-                  trailingBody: Text('Выбрать')
-                ),
-              ]
+            child: StreamBuilder(
+              stream: orderBloc.checkoutFormInfoStream,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData &
+                (snapshot.data is CheckoutFormInfo)) {
+                  CheckoutFormInfo checkoutFormInfo = snapshot.data;
+                  return CheckoutSelectItems(
+                    context: context,
+                    checkoutFormInfo: checkoutFormInfo
+                  );
+                }
+                return Text('checkout info');
+
+              }
             ),
           ),
         ]
@@ -92,27 +118,68 @@ class CheckoutPage extends StatelessWidget {
     );
   }
 
-  Widget CheckoutBottomSheet({
-    required handleClick,
+  Widget CheckoutSelectItems({
+    required BuildContext context,
+    required CheckoutFormInfo checkoutFormInfo,
   }) {
-    return Row(
+    String? delivery_method = checkoutFormInfo.delivery_method?.name;
+    String? payment_method = checkoutFormInfo.payment_method?.name;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Container(
-            height: 50.0,
-            margin: EdgeInsets.only(
-              bottom: 10.0,
-            ),
-            child: ElevatedButton(
-              onPressed: () => handleClick(),
-              child: Text(
-                "Оформить заказ",
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w700,
-                )
-              )
-            ),
+        SelectableListTile(
+          handleTap: () => {}, 
+          title: "Получатель",
+          trailingBody: Text('Заказ для меня')
+        ),
+        SelectableListTile(
+          handleTap: () => openSelectBottomSheet(
+            context: context,
+            contentWidget: SelectDeliveryMethod(),
+          ), 
+          title: "Способ доставки",
+          trailingBody: Text(
+            delivery_method == null ?
+            'Выбрать':
+            '$delivery_method'
+          )
+        ),
+        SelectableListTile(
+          handleTap: () => {}, 
+          title: "Адрес доставки",
+          trailingBody: Text('Выбрать')
+        ),
+        /*
+        SelectableListTile(
+          handleTap: () => {}, 
+          title: "Время доставки",
+          trailingBody: Text('Выбрать')
+        ),
+        */
+        SelectableListTile(
+          handleTap: () => {}, 
+          title: "Заметки к заказу",
+          trailingBody: Text('Добавить')
+        ),
+        SizedBox(height: 10.0),
+        Text(
+          "Оплата",
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 18.0,
+          )
+        ),
+        SelectableListTile(
+          handleTap: () => openSelectBottomSheet(
+            context: context,
+            contentWidget: SelectPaymentMethod(),
+          ), 
+          title: "Способ оплаты",
+          trailingBody: Text(
+            payment_method == null ?
+            'Выбрать':
+            '$payment_method'
           )
         ),
       ]

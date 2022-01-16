@@ -25,4 +25,12 @@ class AppAPIProvider {
     return response.data["stocks"];
   }
 
+  Future<Response> getCheckoutInfo() async {
+    print('run get checkout info');
+    Response response = await client.get(
+      "/site/checkout-common-info"
+    );
+    return response;
+  }
+
 }

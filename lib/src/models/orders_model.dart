@@ -1,6 +1,51 @@
+import 'package:dio/dio.dart';
 import 'package:myapp/src/models/cart_model.dart';
 import 'package:myapp/src/models/common_model.dart';
 import 'package:myapp/src/models/user_model.dart';
+
+
+class CheckoutInfo {
+  List <DeliveryMethod> delivery_methods;   
+  List <PaymentMethod> payment_methods;
+  List <PickupAddress> pickup_addresses;
+
+  CheckoutInfo({
+    required this.delivery_methods,
+    required this.payment_methods,
+    required this.pickup_addresses,
+  });
+
+  factory CheckoutInfo.fromJson(Map<String,dynamic> json) {
+    List<DeliveryMethod> checkoutDeliveryMethods = 
+    json['delivery_methods'].map<DeliveryMethod>((item) => 
+    DeliveryMethod.fromJson(item)).toList();
+
+    List<PaymentMethod> checkoutPaymentMethods = 
+    json['payment_methods'].map<PaymentMethod>((item) => 
+    PaymentMethod.fromJson(item)).toList();
+
+    List<PickupAddress> checkoutPickupAddresses = 
+    json['pickup_addresses'].map<PickupAddress>((item) => 
+    PickupAddress.fromJson(item)).toList();
+
+    return CheckoutInfo(
+      delivery_methods: checkoutDeliveryMethods,
+      payment_methods: checkoutPaymentMethods,
+      pickup_addresses: checkoutPickupAddresses,
+    );
+  }
+
+  static CheckoutInfo? processFromResponse (Response response) {
+    if (response.statusCode != 200) { return null;}    
+    try {
+      CheckoutInfo checkoutInfo = CheckoutInfo.fromJson(response.data);
+      return checkoutInfo;
+    } on Exception {
+      return null; 
+    }
+  }
+
+}
 
 class OrderStatus {
   String id;
@@ -60,14 +105,18 @@ class DeliveryMethod {
 class PickupAddress {
   String id;
   String name;
+  String info;
+
   PickupAddress({
     required this.id,
-    required this.name
+    required this.name,
+    required this.info
   });
   factory PickupAddress.fromJson(Map<String,dynamic> json) {
     return PickupAddress(
       id: json['id'],
       name: json['name'],
+      info: json['info']
     );
   }
 }
