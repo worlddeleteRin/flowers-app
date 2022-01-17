@@ -32,15 +32,15 @@ class UserDeliveryAddress {
   String comment;
 
   UserDeliveryAddress({
-    required this.id,
-    required this.city,
-    required this.street,
-    required this.house_number,
-    required this.flat_number,
-    required this.entrance_number,
-    required this.floor_number,
-    required this.address_display,
-    required this.comment,
+    this.id = "",
+    this.city = "",
+    this.street = "",
+    this.house_number = "",
+    this.flat_number = "",
+    this.entrance_number = "",
+    this.floor_number = "",
+    this.address_display = "",
+    this.comment = "",
   });
 
   factory UserDeliveryAddress.fromJson(Map<String,dynamic> json) {

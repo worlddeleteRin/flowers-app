@@ -1,10 +1,43 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/user_model.dart';
 import 'package:myapp/src/ui/components/common/MainSliverRefreshControl.dart';
+import 'package:myapp/src/ui/components/common/SimpleBottomActionContainer.dart';
 import 'package:myapp/src/ui/components/common/SimpleMenuTile.dart';
+import 'package:myapp/src/ui/pages/CreateUserAddress.dart';
+import 'package:myapp/src/ui/pages/EditUserAddress.dart';
 
 class ProfileDeliveryAddresses extends StatelessWidget {
+  goCreateAddressPage({
+    required BuildContext context
+  }) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (BuildContext context) {
+          return CreateUserAddress();
+        }
+      )
+    );
+  }
+
+  goEditAddressPage({
+    required BuildContext context,
+    required UserDeliveryAddress address
+  }) {
+     Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (BuildContext context) {
+          return EditUserAddress(
+            address: address
+          );
+        }
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!userBloc.userDeliveryAddressesFetched) {
@@ -56,6 +89,14 @@ class ProfileDeliveryAddresses extends StatelessWidget {
               userDeliveryAddresses: userDeliveryAddresses,
             )
           ),
+          SliverToBoxAdapter(
+            child: SimpleBottomActionContainer(
+              handleClick: () => goCreateAddressPage(
+                context: context
+              ),
+              buttonTitle: "Добавить адрес"
+            ),
+          ),
         ]
       ),
     );
@@ -72,8 +113,19 @@ class ProfileDeliveryAddresses extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         UserDeliveryAddress address = userDeliveryAddresses[index];
         return SimpleMenuTile(
-          title: "${address.address_display}",
-          handleTap: () => {},
+          title: "${address.city} ${address.address_display}",
+          handleTap: () {
+            print('city is ${address.city}');
+            /*
+            userBloc.currentUserAddressSink.add(
+              address
+            );
+            */
+            goEditAddressPage(
+              context: context,
+              address: address,
+            );
+          },
         );
       }
     );

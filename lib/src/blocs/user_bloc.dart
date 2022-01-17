@@ -13,17 +13,22 @@ class UserBloc {
 
   UserAPIProvider userAPIProvider = UserAPIProvider();
 
-  BehaviorSubject _authTokenFetcher = BehaviorSubject();
-  BehaviorSubject _userFetcher = BehaviorSubject();
-  BehaviorSubject _userOrdersFetcher = BehaviorSubject();
-  BehaviorSubject _userDeliveryAddresses = BehaviorSubject();
-  BehaviorSubject userLoginForm = BehaviorSubject<UserLoginForm>.seeded(UserLoginForm());
+  final _authTokenFetcher = BehaviorSubject();
+  final _userFetcher = BehaviorSubject();
+  final _userOrdersFetcher = BehaviorSubject();
+  final _userDeliveryAddresses = 
+  BehaviorSubject<List<UserDeliveryAddress>>();
+  final userLoginForm = 
+  BehaviorSubject<UserLoginForm>.seeded(UserLoginForm());
+
 
   Stream get authToken => _authTokenFetcher.stream;
   Stream get user => _userFetcher.stream;
   Stream get userOrders => _userOrdersFetcher.stream;
   Stream get userDeliveryAddresses => _userDeliveryAddresses.stream;
   Stream get userLoginFormStream => userLoginForm.stream;
+
+
 
   User? get userLastValue => _userFetcher.valueOrNull;
   String? get authTokenLastValue => _authTokenFetcher.valueOrNull;
