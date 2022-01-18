@@ -41,6 +41,7 @@ class UserDeliveryAddressForm extends StatelessWidget {
             TextFormField(
               initialValue: address.street,  
             ),
+            /*
             // submit button
             ElevatedButton(
               onPressed: () {
@@ -48,6 +49,7 @@ class UserDeliveryAddressForm extends StatelessWidget {
               },
               child: Text('validate form')
             ),
+            */
           ]
         )
       )

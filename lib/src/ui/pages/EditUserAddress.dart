@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/user_model.dart';
+import 'package:myapp/src/ui/components/common/SimpleBottomActionContainer.dart';
 import 'package:myapp/src/ui/components/user/UserDeliveryAddressForm.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -58,16 +59,26 @@ class EditUserAddress extends StatelessWidget {
   Widget EditUserAddressContent({
     required UserDeliveryAddress address,
   }) {
-  return Column(
-      children: [
-        Text('asdf'),
-        Text('city is ${address.city}'),
-        UserDeliveryAddressForm(
-          formKey: _formKey, 
-          address: address,
-          addressSink: currentUserAddressSink,
-        ),
-      ],
+  return Container(
+    margin: EdgeInsets.symmetric(
+      horizontal: 14.0,
+      vertical: 10.0,
+    ),
+    child: Column(
+        children: [
+          Expanded(
+            child: UserDeliveryAddressForm(
+              formKey: _formKey, 
+              address: address,
+              addressSink: currentUserAddressSink,
+            ),
+          ),
+          SimpleBottomActionContainer(
+            handleClick: () => {},
+            buttonTitle: "Сохранить"
+          ),
+        ],
+      ),
     );
   }
 }

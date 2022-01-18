@@ -75,29 +75,33 @@ class ProfileDeliveryAddresses extends StatelessWidget {
 
     return Container(
      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 14.0),
-     child: CustomScrollView(
-        physics: BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics()
-        ),
-        slivers: [
-          MainSliverRefreshControl(
-            handleOnRefresh: () async => 
-            await userBloc.fetchUserDeliveryAddresses()
-          ),
-          SliverToBoxAdapter(
-            child: AddressesList(
-              userDeliveryAddresses: userDeliveryAddresses,
-            )
-          ),
-          SliverToBoxAdapter(
-            child: SimpleBottomActionContainer(
-              handleClick: () => goCreateAddressPage(
-                context: context
+     child: Column(
+      children: [
+          Expanded(
+             child: CustomScrollView(
+              physics: BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()
               ),
-              buttonTitle: "Добавить адрес"
+              slivers: [
+                MainSliverRefreshControl(
+                  handleOnRefresh: () async => 
+                  await userBloc.fetchUserDeliveryAddresses()
+                ),
+                SliverToBoxAdapter(
+                  child: AddressesList(
+                    userDeliveryAddresses: userDeliveryAddresses,
+                  ),
+                ),
+              ]
             ),
           ),
-        ]
+          SimpleBottomActionContainer(
+            handleClick: () => goCreateAddressPage(
+              context: context
+            ),
+            buttonTitle: "Добавить адрес"
+          ),
+        ],
       ),
     );
 
