@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:myapp/src/api/api_client.dart';
 import 'package:dio/dio.dart';
+import 'package:myapp/src/models/user_model.dart';
 
 class UserAPIProvider {
   Dio client = APIClient().loadDef();
@@ -95,6 +96,25 @@ class UserAPIProvider {
     print('run get user delivery addresses');
     Response response = await client.get(
       "/users/me/delivery-address",
+      options: Options(
+        headers: {
+          'authorization': 'Bearer $authToken'
+        }
+      )
+    );
+    return response;
+  }
+
+  /// get current user delivery addresses 
+  Future<Response> updateUserDeliveryAddresses({
+    required String authToken,
+    required UserDeliveryAddress address,
+  }) async {
+    print('run get user delivery addresses');
+    print('address id is ${address.id} ${address.street}');
+    Response response = await client.patch(
+      "/users/me/delivery-address/${address.id}",
+      data: address.toJson(),
       options: Options(
         headers: {
           'authorization': 'Bearer $authToken'
