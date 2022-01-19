@@ -56,6 +56,19 @@ class UserDeliveryAddress {
       comment: json['comment'], 
     );
   }
+  
+  Map<String,dynamic> toJson () =>
+    {
+      "id": this.id,
+      "city": this.city,
+      "street": this.street,
+      "house_number": this.house_number,
+      "flat_number": this.flat_number,
+      "entrance_number": this.entrance_number,
+      "floor_number": this.floor_number,
+      "address_display": this.address_display,
+      "comment": this.comment
+    };
 
   static List<UserDeliveryAddress>? 
   processAddressesFromResponse (Response response) {

@@ -40,6 +40,12 @@ class UserDeliveryAddressForm extends StatelessWidget {
             // street input
             TextFormField(
               initialValue: address.street,  
+              onChanged: (value) {
+                address.street = value;
+                addressSink.add(
+                  address
+                );
+              },
             ),
             /*
             // submit button

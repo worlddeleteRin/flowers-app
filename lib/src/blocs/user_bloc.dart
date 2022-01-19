@@ -201,6 +201,25 @@ class UserBloc {
     }
   }
 
+  Future<bool> updateUserDeliveryAddress ({
+    required UserDeliveryAddress address
+  }) async {
+    String? authToken = authTokenLastValue;
+    if (authToken == null) {return false;};
+    try {
+      Response response = await userAPIProvider.updateUserDeliveryAddresses(
+        authToken: authToken,
+        address: address,
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } on Exception {
+      return false;
+    }
+  }
+
   
   /// process user orders from response
   /// return Orders list | null

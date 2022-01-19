@@ -15,6 +15,20 @@ class EditUserAddress extends StatelessWidget {
   _EditUserAddressState createState() => _EditUserAddressState();
 }
 */
+  saveUserAddress ({
+    required BuildContext context
+  }) async {
+    UserDeliveryAddress? newAddress = this.currentUserAddressLastValue;
+    if (!(newAddress is UserDeliveryAddress)) { return null;};
+    print('new address is ${newAddress.toJson()}');
+    bool isSuccess = await userBloc.updateUserDeliveryAddress(
+      address: newAddress 
+    );
+    if (isSuccess) {
+      userBloc.fetchUserDeliveryAddresses();
+      Navigator.of(context).pop();
+    }
+  }
 
 // class _EditUserAddressState extends State<EditUserAddress> {
   final _formKey = GlobalKey<FormState>();
@@ -28,10 +42,14 @@ class EditUserAddress extends StatelessWidget {
   Sink<UserDeliveryAddress> get currentUserAddressSink =>
   _currentUserAddress.sink;
 
+  UserDeliveryAddress? get currentUserAddressLastValue =>
+  _currentUserAddress.valueOrNull;
+
 
   @override  
   Widget build(BuildContext context) {
     UserDeliveryAddress newAddress = UserDeliveryAddress(
+      id: address.id,
       city: address.city,
       street: address.street,
     );
@@ -47,6 +65,7 @@ class EditUserAddress extends StatelessWidget {
           (snapshot.data is UserDeliveryAddress)) {
             UserDeliveryAddress address = snapshot.data;
             return EditUserAddressContent(
+              context: context,
               address: address,
             );
           }
@@ -57,6 +76,7 @@ class EditUserAddress extends StatelessWidget {
   }
 
   Widget EditUserAddressContent({
+    required BuildContext context,
     required UserDeliveryAddress address,
   }) {
   return Container(
@@ -73,8 +93,11 @@ class EditUserAddress extends StatelessWidget {
               addressSink: currentUserAddressSink,
             ),
           ),
+          Text('${address.toJson()}'),
           SimpleBottomActionContainer(
-            handleClick: () => {},
+            handleClick: () => saveUserAddress(
+              context: context
+            ),
             buttonTitle: "Сохранить"
           ),
         ],
