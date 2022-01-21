@@ -18,9 +18,11 @@ class CallOtpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: CallOtpPageContent(context: context)
+    return Scaffold(
+      appBar: AppBar(
+      ),
+      body: SafeArea(
+        child: CallOtpPageContent(context: context)
       ),
     );
   }

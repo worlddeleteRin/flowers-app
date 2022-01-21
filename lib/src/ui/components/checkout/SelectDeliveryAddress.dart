@@ -77,9 +77,15 @@ class SelectDeliveryAddress extends StatelessWidget {
               SizedBox(height: 40.0),
               Container( 
                 height: 150.0,
-                child: ListView(
+                child: 
+                userAddresses.length > 0 ? 
+                ListView(
                   children: deliveryAddressesList
-                ),
+                ):
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 14.0),
+                  child: Text("Вы не добавили ни одного адреса"),
+                )
               ),
               SizedBox(height: 10.0),
               Container(
