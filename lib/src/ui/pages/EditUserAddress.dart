@@ -15,14 +15,35 @@ class EditUserAddress extends StatelessWidget {
   _EditUserAddressState createState() => _EditUserAddressState();
 }
 */
+  bool validateFormInput () {
+    FormState? currentState = _formKey.currentState;
+    if (!(currentState is FormState)) {return false;};
+    if (currentState.validate()) {return true;}
+    return false;
+  }
+
   saveUserAddress ({
     required BuildContext context
   }) async {
     UserDeliveryAddress? newAddress = this.currentUserAddressLastValue;
+    bool isFormValid = validateFormInput();
+    if (!isFormValid) {return null;};
     if (!(newAddress is UserDeliveryAddress)) { return null;};
     print('new address is ${newAddress.toJson()}');
     bool isSuccess = await userBloc.updateUserDeliveryAddress(
       address: newAddress 
+    );
+    if (isSuccess) {
+      userBloc.fetchUserDeliveryAddresses();
+      Navigator.of(context).pop();
+    }
+  }
+
+  removeAddress({
+    required BuildContext context,
+  }) async {
+    bool isSuccess = await userBloc.deleteUserDeliveryAddress(
+      addressId: address.id, 
     );
     if (isSuccess) {
       userBloc.fetchUserDeliveryAddresses();
@@ -52,9 +73,15 @@ class EditUserAddress extends StatelessWidget {
       id: address.id,
       city: address.city,
       street: address.street,
+      house_number: address.house_number,
+      flat_number: address.flat_number,
+      floor_number: address.floor_number,
+      entrance_number: address.entrance_number,
+      comment: address.comment,
     );
     currentUserAddressSink.add(newAddress);
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Изменение адреса')
       ),
@@ -91,9 +118,12 @@ class EditUserAddress extends StatelessWidget {
               formKey: _formKey, 
               address: address,
               addressSink: currentUserAddressSink,
+              showRemove: true,
+              handleRemove: () => removeAddress(
+                context: context,
+              ),
             ),
           ),
-          Text('${address.toJson()}'),
           SimpleBottomActionContainer(
             handleClick: () => saveUserAddress(
               context: context

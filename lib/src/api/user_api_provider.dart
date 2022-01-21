@@ -105,7 +105,27 @@ class UserAPIProvider {
     return response;
   }
 
-  /// get current user delivery addresses 
+  /// create new user delivery addresses 
+  Future<Response> createUserDeliveryAddresses({
+    required String authToken,
+    required UserDeliveryAddress address,
+  }) async {
+    print('run create user delivery addresses');
+    Response response = await client.post(
+      "/users/me/delivery-address",
+      data: address.toJson(),
+      options: Options(
+        headers: {
+          'authorization': 'Bearer $authToken'
+        }
+      )
+    );
+    print('response is ${response.data}');
+    return response;
+  }
+
+  /// update user delivery addresses 
+  /// with specified `[id]`
   Future<Response> updateUserDeliveryAddresses({
     required String authToken,
     required UserDeliveryAddress address,
@@ -115,6 +135,24 @@ class UserAPIProvider {
     Response response = await client.patch(
       "/users/me/delivery-address/${address.id}",
       data: address.toJson(),
+      options: Options(
+        headers: {
+          'authorization': 'Bearer $authToken'
+        }
+      )
+    );
+    return response;
+  }
+
+  /// delete user delivery addresses 
+  /// with specified `[id]`
+  Future<Response> deleteUserDeliveryAddresses({
+    required String authToken,
+    required String addressId,
+  }) async {
+    print('run delete user delivery addresses');
+    Response response = await client.delete(
+      "/users/me/delivery-address/${addressId}",
       options: Options(
         headers: {
           'authorization': 'Bearer $authToken'

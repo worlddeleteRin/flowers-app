@@ -31,6 +31,8 @@ class UserOrderCard extends StatelessWidget {
           SizedBox(height: 5.0),
           OrderDeliveryMethodBlock(),
           SizedBox(height: 5.0),
+          OrderDeliveryAddressBlock(),
+          SizedBox(height: 5.0),
           OrderCartItemsImages(),
         ]
       )
@@ -88,10 +90,24 @@ class UserOrderCard extends StatelessWidget {
     );
   }
 
+  Widget OrderDeliveryAddressBlock() {
+    String deliveryAddress = "${order.delivery_address?.address_display}";
+    return Text(
+      deliveryAddress,
+      style: TextStyle(
+        fontSize: 14.0,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
   Widget OrderCartItemsImages() {
     List<Widget> imagesList = order.cart.line_items.map<Widget>(
       (lineItem) {
         return Container(
+          margin: EdgeInsets.only(
+            right: 8.0
+          ),
           width: 70.0,
           height: 80.0,
           child: Image(

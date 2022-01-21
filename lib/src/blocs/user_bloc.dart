@@ -34,9 +34,20 @@ class UserBloc {
   String? get authTokenLastValue => _authTokenFetcher.valueOrNull;
   List<UserDeliveryAddress>? get userDeliveryAddressesLastValue => _userDeliveryAddresses.valueOrNull;
 
+  bool get isUserAuthorizedNow {
+    String? authToken = authTokenLastValue; 
+    User? user = userLastValue;
+    if (!(authToken is String) ||
+    !(user is User)) {
+      return false;
+    }
+    return true;
+  }
+
   bool userFetched = false;
   bool userOrdersFetched = false;
   bool userDeliveryAddressesFetched = false;
+
 
   /// check, if auth token saved in `SharedPreferences`
   /// with key `authToken`
@@ -201,6 +212,7 @@ class UserBloc {
     }
   }
 
+  // update passed user [`address`]
   Future<bool> updateUserDeliveryAddress ({
     required UserDeliveryAddress address
   }) async {
@@ -208,6 +220,44 @@ class UserBloc {
     if (authToken == null) {return false;};
     try {
       Response response = await userAPIProvider.updateUserDeliveryAddresses(
+        authToken: authToken,
+        address: address,
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } on Exception {
+      return false;
+    }
+  }
+
+  Future<bool> deleteUserDeliveryAddress ({
+    required String addressId
+  }) async {
+    String? authToken = authTokenLastValue;
+    if (authToken == null) {return false;};
+    try {
+      Response response = await userAPIProvider.deleteUserDeliveryAddresses(
+        authToken: authToken,
+        addressId: addressId
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } on Exception {
+      return false;
+    }
+  }
+
+  Future<bool> createUserDeliveryAddress ({
+    required UserDeliveryAddress address
+  }) async {
+    String? authToken = authTokenLastValue;
+    if (authToken == null) {return false;};
+    try {
+      Response response = await userAPIProvider.createUserDeliveryAddresses(
         authToken: authToken,
         address: address,
       );

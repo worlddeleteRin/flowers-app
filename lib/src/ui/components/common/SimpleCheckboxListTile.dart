@@ -15,13 +15,17 @@ Widget SimpleCheckBoxListTile({
             onChanged: (bool? checkboxValue) => 
             onChanged(checkboxValue),
           ),
-          Text(
-            "$title",
-            style: TextStyle(
-              fontSize: 15.0,
-              fontWeight: FontWeight.w500,
-            )
-          ),
+          Expanded(
+            child: Text(
+              "$title",
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.w500,
+              )
+            ),
+          )
         ]
       ),
     ),

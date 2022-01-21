@@ -88,9 +88,11 @@ class ProfileDeliveryAddresses extends StatelessWidget {
                   await userBloc.fetchUserDeliveryAddresses()
                 ),
                 SliverToBoxAdapter(
-                  child: AddressesList(
+                  child: userDeliveryAddresses.length > 0 ?
+                  AddressesList(
                     userDeliveryAddresses: userDeliveryAddresses,
-                  ),
+                  ):
+                  Text('Вы еще не добавили ни одного адреса')
                 ),
               ]
             ),
@@ -116,20 +118,20 @@ class ProfileDeliveryAddresses extends StatelessWidget {
       itemCount: userDeliveryAddresses.length,
       itemBuilder: (BuildContext context, int index) {
         UserDeliveryAddress address = userDeliveryAddresses[index];
-        return SimpleMenuTile(
-          title: "${address.city} ${address.address_display}",
-          handleTap: () {
-            print('city is ${address.city}');
-            /*
-            userBloc.currentUserAddressSink.add(
-              address
-            );
-            */
-            goEditAddressPage(
-              context: context,
-              address: address,
-            );
-          },
+        return Container(
+          margin: EdgeInsets.only(
+            top: 10.0,
+          ),
+          child: SimpleMenuTile(
+            title: "${address.city} ${address.address_display}",
+            handleTap: () {
+              print('city is ${address.city}');
+              goEditAddressPage(
+                context: context,
+                address: address,
+              );
+            },
+          ),
         );
       }
     );

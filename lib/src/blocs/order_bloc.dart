@@ -38,6 +38,7 @@ class OrderBloc {
 
     PaymentMethod? payment_method = checkoutForm.payment_method;
     DeliveryMethod? delivery_method = checkoutForm.delivery_method;
+    UserDeliveryAddress? delivery_address = checkoutForm.delivery_address;
     if (!(payment_method is PaymentMethod)) {return false;};
     if (!(delivery_method is DeliveryMethod)) {return false;};
 
@@ -47,7 +48,8 @@ class OrderBloc {
       authToken: authToken,
       cart_id: cart.id,
       payment_method: payment_method.id,
-      delivery_method: delivery_method.id
+      delivery_method: delivery_method.id,
+      delivery_address: delivery_address?.id,
     );
     if (response.statusCode == 200) {
       processOrderCreatedResponse(response); 

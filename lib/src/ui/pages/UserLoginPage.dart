@@ -7,6 +7,10 @@ import 'package:myapp/src/ui/components/common/TitleBig.dart';
 import 'package:myapp/src/ui/pages/CallOtpPage.dart';
 
 class LoginPage extends StatelessWidget {
+  final bool showAppBar; 
+  LoginPage({
+    this.showAppBar = false
+  });
 
   loginUser ({
     required BuildContext context,
@@ -26,16 +30,23 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            showAppBar ?
+            "Авторизация":
+            ""
+          )
+        ),
         backgroundColor: Colors.white,
         /*
         appBar: AppBar(
           title: Text('Авторизация')
         ),
         */
-        body: LoginPageContent(context: context)
-      ),
+        body: SafeArea(
+          child: LoginPageContent(context: context)
+        ),
     );
   }
 

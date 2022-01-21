@@ -52,6 +52,31 @@ class ProfileOrdersPage extends StatelessWidget {
     required BuildContext context,
     required List<Order> orders,
   }) {
+    Widget ordersListComponent;
+    Widget ordersNotEmptyList = ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: orders.length,
+      itemBuilder: (BuildContext context, int index)  {
+        return Container(
+          margin: EdgeInsets.symmetric(
+            vertical: 7.0,
+          ),
+          child: UserOrderCard(
+            order: orders[index] 
+          ),
+        );
+      }
+    );
+    Widget ordersEmptyList = Container(
+      child: Text(
+        "Вы еще не сделали ни одного заказа"
+      )
+    );
+    ordersListComponent = orders.length > 0 ? 
+    ordersNotEmptyList:
+    ordersEmptyList;
+
     return CustomScrollView(
       physics: BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics()
@@ -62,21 +87,7 @@ class ProfileOrdersPage extends StatelessWidget {
           await refreshUserOrders(),
         ),
         SliverToBoxAdapter(
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: orders.length,
-            itemBuilder: (BuildContext context, int index)  {
-              return Container(
-                margin: EdgeInsets.symmetric(
-                  vertical: 7.0,
-                ),
-                child: UserOrderCard(
-                  order: orders[index] 
-                ),
-              );
-            }
-          ),
+          child: ordersListComponent
         )
       ]
     );

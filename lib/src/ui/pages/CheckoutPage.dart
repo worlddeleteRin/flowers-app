@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/app_bloc.dart';
 import 'package:myapp/src/blocs/order_bloc.dart';
 import 'package:myapp/src/models/app_model.dart';
+import 'package:myapp/src/ui/components/checkout/SelectDeliveryAddress.dart';
 import 'package:myapp/src/ui/components/checkout/SelectDeliveryMethod.dart';
 import 'package:myapp/src/ui/components/checkout/SelectPaymentMethod.dart';
 import 'package:myapp/src/ui/components/common/DraggableBaseSelectBottomSheet.dart';
@@ -124,15 +125,18 @@ class CheckoutPage extends StatelessWidget {
   }) {
     String? delivery_method = checkoutFormInfo.delivery_method?.name;
     String? payment_method = checkoutFormInfo.payment_method?.name;
+    String? delivery_address = checkoutFormInfo.delivery_address?.address_display;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+      /*
         SelectableListTile(
           handleTap: () => {}, 
           title: "Получатель",
           trailingBody: Text('Заказ для меня')
         ),
+      */
         SelectableListTile(
           handleTap: () => openSelectBottomSheet(
             context: context,
@@ -142,13 +146,24 @@ class CheckoutPage extends StatelessWidget {
           trailingBody: Text(
             delivery_method == null ?
             'Выбрать':
-            '$delivery_method'
+            '$delivery_method',
+            textAlign: TextAlign.end,
           )
         ),
         SelectableListTile(
-          handleTap: () => {}, 
+          handleTap: () => openSelectBottomSheet(
+            context: context,
+            contentWidget: SelectDeliveryAddress(),
+          ), 
           title: "Адрес доставки",
-          trailingBody: Text('Выбрать')
+          trailingBody: Text(
+            delivery_address == null ? 
+            'Выбрать':
+            '$delivery_address',
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.end,
+          )
         ),
         /*
         SelectableListTile(
@@ -160,7 +175,10 @@ class CheckoutPage extends StatelessWidget {
         SelectableListTile(
           handleTap: () => {}, 
           title: "Заметки к заказу",
-          trailingBody: Text('Добавить')
+          trailingBody: Text(
+            'Добавить',
+            textAlign: TextAlign.end,
+          )
         ),
         SizedBox(height: 10.0),
         Text(
@@ -179,7 +197,8 @@ class CheckoutPage extends StatelessWidget {
           trailingBody: Text(
             payment_method == null ?
             'Выбрать':
-            '$payment_method'
+            '$payment_method',
+            textAlign: TextAlign.end,
           )
         ),
       ]

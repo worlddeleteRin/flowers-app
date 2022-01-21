@@ -12,7 +12,9 @@ Widget SelectableListTile({
     child: Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        trailingBody,
+        Expanded(
+        child: trailingBody,
+        ),
         Icon(
           Icons.chevron_right,
           color: Colors.black,

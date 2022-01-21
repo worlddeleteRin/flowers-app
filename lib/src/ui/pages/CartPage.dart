@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 // import 'package:myapp/src/blocs/app_bloc.dart';
 import 'package:myapp/src/blocs/cart_bloc.dart';
+import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/cart_model.dart';
 // import 'package:myapp/src/models/catalogue_model.dart';
 import 'package:myapp/src/ui/components/cart/CartEmptyBlock.dart';
 import 'package:myapp/src/ui/components/cart/CartLineItems.dart';
 import 'package:myapp/src/ui/components/common/MainSliverRefreshControl.dart';
+import 'package:myapp/src/ui/components/common/SimpleBottomActionContainer.dart';
 import 'package:myapp/src/ui/pages/CheckoutPage.dart';
+import 'package:myapp/src/ui/pages/UserLoginPage.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -59,6 +62,39 @@ class _CartPageState extends State<CartPage> {
     setCartRefreshing(true);
     await cart.addLineItemQuantity(lineItemId);
     setCartRefreshing(false);
+  }
+
+  goAuthorizationPage({
+    required BuildContext context,
+  }) {
+    // BuildContext mainContext = Scaffold.of(context).context;
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (BuildContext mainContext) {
+          return LoginPage(
+            showAppBar: true
+          );
+        }
+      )
+    );
+  }
+
+  goCheckoutPage({
+    required BuildContext context,
+  }) {
+    if (!userBloc.isUserAuthorizedNow) {
+      return goAuthorizationPage(context: context);
+    }
+    BuildContext mainContext = Scaffold.of(context).context;
+    Navigator.push(
+      mainContext,
+      CupertinoPageRoute(
+        builder: (BuildContext mainContext) {
+          return CheckoutPage();
+        }
+      )
+    );
   }
 
   @override
@@ -143,20 +179,9 @@ class _CartPageState extends State<CartPage> {
           ),
           // eof cart main content
           // cart go checkout
-          Container(
-            child: CartBottomSheet(
-              handleGoCheckout: () {
-                BuildContext mainContext = Scaffold.of(context).context;
-                Navigator.push(
-                  mainContext,
-                  CupertinoPageRoute(
-                    builder: (BuildContext mainContext) {
-                      return CheckoutPage();
-                    }
-                  )
-                );
-              },
-            ),
+          SimpleBottomActionContainer(
+            handleClick: () => goCheckoutPage(context: context),
+            buttonTitle: "К оформлению заказа"
           ),
           // eof cart go checkout
         ],
@@ -172,6 +197,7 @@ class _CartPageState extends State<CartPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+      /*
         ListTile(
           title: Text('Доставка без оповещения'),
           trailing: CupertinoSwitch(
@@ -180,6 +206,7 @@ class _CartPageState extends State<CartPage> {
             onChanged: (value) {},
           ),
         ),
+      */
         ListTile(
           title: Text(
             'Сумма заказа',
@@ -209,30 +236,6 @@ class _CartPageState extends State<CartPage> {
             "${cart.total_amount}",
             style: Theme.of(context).textTheme.subtitle1
           ),
-        ),
-      ]
-    );
-  }
-
-  Widget CartBottomSheet({
-    required Function handleGoCheckout
-  }) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            height: 50.0,
-            child: ElevatedButton(
-              onPressed: () => handleGoCheckout(),
-              child: Text(
-                "К оформлению заказа",
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w700,
-                )
-              )
-            ),
-          )
         ),
       ]
     );

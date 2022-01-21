@@ -50,7 +50,12 @@ class SelectPaymentMethod extends StatelessWidget {
             );
           }).toList();
           return Column(
-            children: paymentMethodsList 
+            children: [
+              SizedBox(height: 20.0),
+              Column(
+                children: paymentMethodsList 
+              )
+            ]
           );
         }
         return Text('test content');

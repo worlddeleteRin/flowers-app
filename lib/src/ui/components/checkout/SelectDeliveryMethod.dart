@@ -50,7 +50,12 @@ class SelectDeliveryMethod extends StatelessWidget {
             );
           }).toList();
           return Column(
-            children: deliveryMethodsList
+            children: [
+              SizedBox(height: 20.0),
+              Column(
+                children: deliveryMethodsList
+              )
+            ]
           );
         }
         return Text('test content');
