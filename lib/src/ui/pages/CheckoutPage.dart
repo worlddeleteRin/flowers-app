@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/app_bloc.dart';
 import 'package:myapp/src/blocs/order_bloc.dart';
 import 'package:myapp/src/models/app_model.dart';
+import 'package:myapp/src/ui/components/checkout/PopupAddOrderComments.dart';
 import 'package:myapp/src/ui/components/checkout/SelectDeliveryAddress.dart';
 import 'package:myapp/src/ui/components/checkout/SelectDeliveryMethod.dart';
 import 'package:myapp/src/ui/components/checkout/SelectPaymentMethod.dart';
@@ -173,7 +174,10 @@ class CheckoutPage extends StatelessWidget {
         ),
         */
         SelectableListTile(
-          handleTap: () => {}, 
+          handleTap: () => openSelectBottomSheet(
+            context: context,
+            contentWidget: PopupAddOrderComments(),
+          ), 
           title: "Заметки к заказу",
           trailingBody: Text(
             'Добавить',
