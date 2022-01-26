@@ -17,7 +17,45 @@ class UserLoginForm {
     this.otp = "",
     this.auth_type = "call_otp"
   });
+}
 
+class RecipientTypes {
+  static const String user = "user";
+  static const String other_person = "other_person";
+
+  static String get_type_label(String type) {
+    if (type == RecipientTypes.user) {
+      return "Для меня";
+    }
+    if (type == RecipientTypes.other_person) {
+      return "Другой получатель";
+    }
+    return "";
+  }
+}
+
+class RecipientPerson {
+  String name;
+  String phone;
+
+  RecipientPerson({
+    required this.name,
+    required this.phone
+  });
+
+  factory RecipientPerson.fromJson(Map<String,dynamic> json) {
+    return RecipientPerson(
+      name: json['name'],
+      phone: json['phone'],
+    );
+  }
+  
+  Map<String,dynamic> toJson() {
+    return {
+      "name": this.name,
+      "phone": this.phone,
+    };
+  }
 }
 
 class UserDeliveryAddress {
@@ -30,6 +68,8 @@ class UserDeliveryAddress {
   String floor_number;
   String address_display;
   String comment;
+  String recipient_type;
+  RecipientPerson? recipient_person;
 
   UserDeliveryAddress({
     this.id = "",
@@ -41,9 +81,16 @@ class UserDeliveryAddress {
     this.floor_number = "",
     this.address_display = "",
     this.comment = "",
+    this.recipient_type = "user",
+    this.recipient_person,
   });
 
   factory UserDeliveryAddress.fromJson(Map<String,dynamic> json) {
+    RecipientPerson? recipientPerson = 
+    json['recipient_person'] == null ?
+    null :
+    RecipientPerson.fromJson(json['recipient_person']);
+
     return UserDeliveryAddress(
       id: json['id'], 
       city: json['city'], 
@@ -54,6 +101,8 @@ class UserDeliveryAddress {
       floor_number: json['floor_number'], 
       address_display: json['address_display'], 
       comment: json['comment'], 
+      recipient_type: json['recipient_type'],
+      recipient_person: recipientPerson,
     );
   }
   
@@ -67,7 +116,9 @@ class UserDeliveryAddress {
       "entrance_number": this.entrance_number,
       "floor_number": this.floor_number,
       "address_display": this.address_display,
-      "comment": this.comment
+      "comment": this.comment,
+      "recipient_type": this.recipient_type,
+      "recipient_person": this.recipient_person?.toJson(),
     };
 
   static List<UserDeliveryAddress>? 

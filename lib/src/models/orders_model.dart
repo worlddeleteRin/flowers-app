@@ -131,6 +131,8 @@ class Order {
   UserDeliveryAddress? delivery_address;
   PickupAddress? pickup_address;
   String custom_message;
+  String recipient_type;
+  RecipientPerson? recipient_person;
 
   Order({
     required this.cart,
@@ -142,6 +144,8 @@ class Order {
     this.delivery_address,
     this.pickup_address,
     required this.custom_message,
+    this.recipient_type = RecipientTypes.user,
+    this.recipient_person,
   });
 
   factory Order.fromJson(Map<String,dynamic> json) {
@@ -159,6 +163,11 @@ class Order {
     DeliveryMethod orderDeliveryMethod = DeliveryMethod.fromJson(
       json['delivery_method']
     );
+
+    RecipientPerson? recipientPerson = 
+    json['recipient_person'] == null ?
+    null :
+    RecipientPerson.fromJson(json['recipient_person']);
 
     UserDeliveryAddress? orderDeliveryAddress = 
     json['delivery_address'] == null ?
@@ -180,6 +189,8 @@ class Order {
       delivery_address: orderDeliveryAddress,
       pickup_address: orderPickupAddress,
       custom_message: json['custom_message'],
+      recipient_type: json['recipient_type'],
+      recipient_person: recipientPerson,
     );
   }
 

@@ -12,6 +12,11 @@ class CheckoutFormInfo {
   PickupAddress? pickup_address;
   UserDeliveryAddress? delivery_address;
   String custom_message = '';
+  String recipient_type = 'user';
+  RecipientPerson recipient_person = RecipientPerson(
+    name: "",
+    phone: ""
+  );
 }
 
 class StockItem {

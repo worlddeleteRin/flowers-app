@@ -3,15 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/app_bloc.dart';
 import 'package:myapp/src/blocs/order_bloc.dart';
 import 'package:myapp/src/models/app_model.dart';
+import 'package:myapp/src/models/user_model.dart';
 import 'package:myapp/src/ui/components/checkout/PopupAddOrderComments.dart';
 import 'package:myapp/src/ui/components/checkout/SelectDeliveryAddress.dart';
 import 'package:myapp/src/ui/components/checkout/SelectDeliveryMethod.dart';
 import 'package:myapp/src/ui/components/checkout/SelectPaymentMethod.dart';
+import 'package:myapp/src/ui/components/checkout/SelectRecipient.dart';
 import 'package:myapp/src/ui/components/common/DraggableBaseSelectBottomSheet.dart';
 import 'package:myapp/src/ui/components/common/SelectableListTile.dart';
 import 'package:myapp/src/ui/components/common/SimpleBottomActionContainer.dart';
 
 class CheckoutPage extends StatelessWidget {
+
+  String get_recipient_type_label (String type, RecipientPerson recipientPerson) {
+    if (type == RecipientTypes.user) {
+      return RecipientTypes.get_type_label(type);
+    }
+    if (type == RecipientTypes.other_person) {
+      return "${recipientPerson.name} ${recipientPerson.phone}";
+    }
+    return "Выбрать";
+  }
 
   createOrder({
     required BuildContext context
@@ -128,17 +140,27 @@ class CheckoutPage extends StatelessWidget {
     String? payment_method = checkoutFormInfo.payment_method?.name;
     String? delivery_address = checkoutFormInfo.delivery_address?.address_display;
     String order_comment = checkoutFormInfo.custom_message;
+    String recipient_type = checkoutFormInfo.recipient_type;
+    RecipientPerson recipient_person = checkoutFormInfo.recipient_person;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-      /*
+
         SelectableListTile(
-          handleTap: () => {}, 
+          handleTap: () => openSelectBottomSheet(
+            context: context,
+            contentWidget: SelectRecipient(),
+          ), 
           title: "Получатель",
-          trailingBody: Text('Заказ для меня')
+          trailingBody: Text(
+            get_recipient_type_label(
+              recipient_type,
+              recipient_person
+            ),
+            textAlign: TextAlign.end,
+          )
         ),
-      */
         SelectableListTile(
           handleTap: () => openSelectBottomSheet(
             context: context,
