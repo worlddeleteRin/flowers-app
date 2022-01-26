@@ -2,19 +2,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/order_bloc.dart';
-import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/app_model.dart';
-import 'package:myapp/src/models/user_model.dart';
 import 'package:myapp/src/ui/components/common/SimpleBottomActionContainer.dart';
-import 'package:myapp/src/ui/components/common/SimpleCheckboxListTile.dart';
-import 'package:myapp/src/ui/pages/CreateUserAddress.dart';
+import 'package:rxdart/rxdart.dart';
 
 class PopupAddOrderComments extends StatelessWidget { 
+
+  final _orderComment = 
+  BehaviorSubject<String>.seeded('');
+
+  Stream<String> get orderComment =>
+  _orderComment.stream;
+
+  Sink<String> get orderCommentSink =>
+  _orderComment.sink;
+
+  String? get orderCommentLastValue =>
+  _orderComment.valueOrNull;
 
   closePopup({
     required BuildContext context
   }) {
-    return null;
+    Navigator.pop(context);
+  }
+
+  saveOrderComment ({
+    required CheckoutFormInfo checkoutFormInfo,
+  }) {
+    String? orderComment = orderCommentLastValue;
+    if (!(orderComment is String)) {return null;};
+    checkoutFormInfo.custom_message = orderComment;
+    orderBloc.checkoutFormInfo.sink.add(
+      checkoutFormInfo 
+    );
   }
 
   @override
@@ -44,7 +64,18 @@ class PopupAddOrderComments extends StatelessWidget {
                   horizontal: 14.0
                 ),
                 height: 180.0,
-                child: CommentInput(),
+                child: TextFormField(
+                  initialValue: checkoutFormInfo.custom_message,
+                  decoration: const InputDecoration(
+                    hintText: 'Укажите комментарий к заказу',
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (String? newValue) {
+                    if (!(newValue is String)) { return;};
+                    orderCommentSink.add(newValue);
+                  },
+                  maxLines: 4,
+                ),
               ),
               SizedBox(height: 10.0),
               Container(
@@ -52,9 +83,12 @@ class PopupAddOrderComments extends StatelessWidget {
                   horizontal: 14.0,
                 ),
                 child: SimpleBottomActionContainer(
-                  handleClick: () => closePopup(
-                    context: context,
-                  ),
+                  handleClick: () {
+                    saveOrderComment(
+                      checkoutFormInfo: checkoutFormInfo, 
+                    );
+                    closePopup(context: context);
+                  },
                   buttonTitle: "Готово"
                 )
               ),
@@ -66,13 +100,4 @@ class PopupAddOrderComments extends StatelessWidget {
     );
   }
 
-  Widget CommentInput() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        hintText: 'Укажите комментарий к заказу',
-        border: InputBorder.none,
-      ),
-      maxLines: 4,
-    );
-  }
 }

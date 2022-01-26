@@ -127,6 +127,7 @@ class CheckoutPage extends StatelessWidget {
     String? delivery_method = checkoutFormInfo.delivery_method?.name;
     String? payment_method = checkoutFormInfo.payment_method?.name;
     String? delivery_address = checkoutFormInfo.delivery_address?.address_display;
+    String order_comment = checkoutFormInfo.custom_message;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,7 +181,10 @@ class CheckoutPage extends StatelessWidget {
           ), 
           title: "Заметки к заказу",
           trailingBody: Text(
-            'Добавить',
+            order_comment.length == 0 ?    
+            'Добавить':
+            '$order_comment',
+            maxLines: 1,
             textAlign: TextAlign.end,
           )
         ),

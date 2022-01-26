@@ -13,6 +13,7 @@ class OrderAPIProvider {
     required String cart_id,
     required String payment_method,
     required String delivery_method,
+    String custom_message = '',
     String? delivery_address, 
   }) async {
     print('run create new order');
@@ -21,6 +22,7 @@ class OrderAPIProvider {
       "payment_method": payment_method,
       "cart_id": cart_id,
       "delivery_address": delivery_address,
+      "custom_message": custom_message,
     };
     print('orders data is $ordersData');
     Response response = await client.post(

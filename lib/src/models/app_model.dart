@@ -11,6 +11,7 @@ class CheckoutFormInfo {
   PaymentMethod? payment_method;
   PickupAddress? pickup_address;
   UserDeliveryAddress? delivery_address;
+  String custom_message = '';
 }
 
 class StockItem {
