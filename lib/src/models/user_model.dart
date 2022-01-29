@@ -177,4 +177,19 @@ class User {
     );
   }
 
+  Map<String,dynamic> toJson() {
+    return {
+      "id": this.id,
+      "date_created": this.date_created,
+      "email": this.email,
+      "username": this.username,
+      "is_active": this.is_active,
+      "is_superuser": this.is_superuser,
+      "is_verified": this.is_verified,
+      "name": this.name,
+      "bonuses": this.bonuses,
+      "bonuses_rank": this.bonuses_rank,
+    };
+  }
+
 }

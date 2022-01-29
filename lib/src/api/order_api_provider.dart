@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:myapp/src/api/api_client.dart';
 import 'package:dio/dio.dart';
+import 'package:myapp/src/models/user_model.dart';
 
 class OrderAPIProvider {
   Dio client = APIClient().loadDef();
@@ -15,6 +16,8 @@ class OrderAPIProvider {
     required String delivery_method,
     String custom_message = '',
     String? delivery_address, 
+    String? recipient_type,
+    RecipientPerson? recipient_person
   }) async {
     print('run create new order');
     Map<String,dynamic> ordersData = {
@@ -23,6 +26,8 @@ class OrderAPIProvider {
       "cart_id": cart_id,
       "delivery_address": delivery_address,
       "custom_message": custom_message,
+      "recipient_type": recipient_type,
+      "recipient_person": recipient_person,
     };
     print('orders data is $ordersData');
     Response response = await client.post(

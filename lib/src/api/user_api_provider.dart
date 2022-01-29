@@ -73,6 +73,25 @@ class UserAPIProvider {
     return response;
   }
 
+  /// update passed user,
+  Future<Response> updateUserMe({
+    required User user,
+    required String authToken,
+  }) async {
+    print('run update user me');
+    Response response = await client.patch(
+      "/users/me",
+      data: user.toJson(),
+      options: Options(
+        headers: {
+          'authorization': 'Bearer $authToken'
+        }
+      )
+    );
+    print('response is $response');
+    return response;
+  }
+
   /// get orders for current user
   Future<Response> getUserOrders({
     required String authToken,

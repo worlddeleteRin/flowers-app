@@ -14,7 +14,7 @@ class UserBloc {
   UserAPIProvider userAPIProvider = UserAPIProvider();
 
   final _authTokenFetcher = BehaviorSubject();
-  final _userFetcher = BehaviorSubject();
+  final _userFetcher = BehaviorSubject<User>();
   final _userOrdersFetcher = BehaviorSubject();
   final _userDeliveryAddresses = 
   BehaviorSubject<List<UserDeliveryAddress>>();
@@ -23,16 +23,16 @@ class UserBloc {
 
 
   Stream get authToken => _authTokenFetcher.stream;
-  Stream get user => _userFetcher.stream;
+  Stream<User> get user => _userFetcher.stream;
   Stream get userOrders => _userOrdersFetcher.stream;
   Stream get userDeliveryAddresses => _userDeliveryAddresses.stream;
   Stream get userLoginFormStream => userLoginForm.stream;
 
-
-
   User? get userLastValue => _userFetcher.valueOrNull;
   String? get authTokenLastValue => _authTokenFetcher.valueOrNull;
   List<UserDeliveryAddress>? get userDeliveryAddressesLastValue => _userDeliveryAddresses.valueOrNull;
+
+  Sink<User> get userSink => _userFetcher.sink;
 
   bool get isUserAuthorizedNow {
     String? authToken = authTokenLastValue; 
@@ -115,8 +115,11 @@ class UserBloc {
   logoutUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance(); 
     await prefs.remove("authToken");
+    _userFetcher.sink.addError(
+      "user not logged in"
+    );
     // _userFetcher.addError("some error");
-    _userFetcher.sink.add(null);
+    // _userFetcher.sink.close
     _authTokenFetcher.sink.add(null);
     // _userFetcher.close();
   }
@@ -176,6 +179,29 @@ class UserBloc {
       return user;
     } on Exception {
       return null;
+    }
+  }
+
+  /// updates passed user
+  Future<bool> updateUserMe({
+    required User currentUser
+  }) async {
+    String? authToken = _authTokenFetcher.valueOrNull;
+    if (authToken == null) {return false;};
+    try {
+      Response response = await userAPIProvider.updateUserMe(
+        authToken: _authTokenFetcher.value,
+        user: currentUser,
+      );
+      print('user response is $response');
+      User? user = processUserFromResponse(response);
+      if (user is User) {
+        _userFetcher.sink.add(user);
+        return true;
+      }
+      return false;
+    } on Exception {
+      return false;
     }
   }
 

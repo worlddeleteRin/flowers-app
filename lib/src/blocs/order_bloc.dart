@@ -40,6 +40,9 @@ class OrderBloc {
     DeliveryMethod? delivery_method = checkoutForm.delivery_method;
     UserDeliveryAddress? delivery_address = checkoutForm.delivery_address;
     String custom_message = checkoutForm.custom_message;
+    String recipient_type = checkoutForm.recipient_type;
+    RecipientPerson recipient_person = checkoutForm.recipient_person; 
+
     if (!(payment_method is PaymentMethod)) {return false;};
     if (!(delivery_method is DeliveryMethod)) {return false;};
 
@@ -52,6 +55,8 @@ class OrderBloc {
       delivery_method: delivery_method.id,
       delivery_address: delivery_address?.id,
       custom_message: custom_message,
+      recipient_type: recipient_type,
+      recipient_person: recipient_person,
     );
     if (response.statusCode == 200) {
       processOrderCreatedResponse(response); 

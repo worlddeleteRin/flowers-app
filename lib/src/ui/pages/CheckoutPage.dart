@@ -45,11 +45,20 @@ class CheckoutPage extends StatelessWidget {
   }) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15.0))
+      ),
       builder: (BuildContext context) {
         return DraggableBaseSelectBottomSheet(
           context: context,
           builder: (BuildContext context) {
-            return contentWidget;
+            return Padding(
+              // padding: MediaQuery.of(context).viewInsets,
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: contentWidget,
+            );
+            // contentWidget;
           },
         );
       }

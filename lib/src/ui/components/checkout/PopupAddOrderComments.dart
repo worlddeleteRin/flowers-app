@@ -63,7 +63,7 @@ class PopupAddOrderComments extends StatelessWidget {
                 margin: EdgeInsets.symmetric(
                   horizontal: 14.0
                 ),
-                height: 180.0,
+                height: 160.0,
                 child: TextFormField(
                   initialValue: checkoutFormInfo.custom_message,
                   decoration: const InputDecoration(

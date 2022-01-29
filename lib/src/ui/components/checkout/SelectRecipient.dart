@@ -45,6 +45,7 @@ class SelectRecipient extends StatelessWidget {
             );
           }).toList();
           return Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20.0),
@@ -108,6 +109,13 @@ class SelectRecipient extends StatelessWidget {
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
+            onChanged: (String? value) {
+              if (!(value is String)) { return;};
+              checkoutFormInfo.recipient_person.phone = value;
+              orderBloc.checkoutFormInfo.sink.add(
+                checkoutFormInfo
+              );
+            },
           )
         ]
       ),
