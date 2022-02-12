@@ -122,28 +122,34 @@ class PickupAddress {
 }
 
 class Order {
+  String id;
   Cart cart;
   OrderStatus status;
-  String date_created;
-  String date_modified;
+  DateTime? date_created;
+  DateTime? date_modified;
+  DateTime? delivery_datetime;
   PaymentMethod payment_method;
   DeliveryMethod delivery_method;
   UserDeliveryAddress? delivery_address;
   PickupAddress? pickup_address;
   String custom_message;
+  String postcard_text = "";
   String recipient_type;
   RecipientPerson? recipient_person;
 
   Order({
+    required this.id,
     required this.cart,
     required this.status,
     required this.date_created,    
     required this.date_modified,
     required this.payment_method,
     required this.delivery_method,
+    required this.delivery_datetime,
     this.delivery_address,
     this.pickup_address,
     required this.custom_message,
+    this.postcard_text = "",
     this.recipient_type = RecipientTypes.user,
     this.recipient_person,
   });
@@ -179,19 +185,38 @@ class Order {
     null:
     PickupAddress.fromJson( json['pickup_address']);
 
+    DateTime? delivery_datetime = 
+    (json['delivery_datetime'] is String) ?
+    DateTime.tryParse(json['delivery_datetime']):
+    null;
+
     return Order(
+      id: json['id'],
       cart: orderCart, 
       status: orderStatus,
-      date_created: json['date_created'],
-      date_modified: json['date_modified'],
+      date_created: DateTime.tryParse(json['date_created']),
+      date_modified: DateTime.tryParse(json['date_modified']),
+      delivery_datetime: delivery_datetime,
       payment_method: orderPaymentMethod,
       delivery_method: orderDeliveryMethod,
       delivery_address: orderDeliveryAddress,
       pickup_address: orderPickupAddress,
       custom_message: json['custom_message'],
+      postcard_text: json['postcard_text'],
       recipient_type: json['recipient_type'],
       recipient_person: recipientPerson,
     );
   }
+
+  static Order? processOrderFromResponse(Response response) {
+      if (response.statusCode != 200) { return null;};
+      try {
+        Order order = Order.fromJson(response.data);
+        print('order is ${order}');
+        return order;
+      } on Exception {
+        return null;
+      }
+  } 
 
 }

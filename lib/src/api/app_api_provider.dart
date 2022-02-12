@@ -33,4 +33,12 @@ class AppAPIProvider {
     return response;
   }
 
+  Future<Response> getCommonInfo() async {
+    print('run get common info');
+    Response response = await client.get(
+      "/site/common-info"
+    );
+    return response;
+  }
+
 }

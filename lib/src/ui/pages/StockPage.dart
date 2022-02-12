@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/app_bloc.dart';
 import 'package:myapp/src/models/app_model.dart';
+import 'package:myapp/src/ui/components/appbar/PhoneBadge.dart';
 import 'package:myapp/src/ui/components/common/MainSliverRefreshControl.dart';
 import 'package:myapp/src/ui/components/common/PageLoadingCenter.dart';
 import 'package:myapp/src/ui/components/common/StocksList.dart';
@@ -26,6 +27,9 @@ class StockPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text("Акции"),
+          actions: [
+            PhoneBadge(context: context)   
+          ]
         ),
         body: StocksStreamBuilder(context: context),
       )

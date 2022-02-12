@@ -1,13 +1,31 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/orders_model.dart';
 import 'package:myapp/src/ui/components/common/MainSliverRefreshControl.dart';
 import 'package:myapp/src/ui/components/orders/UserOrderCard.dart';
+import 'package:myapp/src/ui/pages/OrderPage.dart';
 
 class ProfileOrdersPage extends StatelessWidget {
 
   refreshUserOrders () async {
     await userBloc.fetchUserOrders();
+  }
+
+  goOrderPage ({
+    required BuildContext context,
+    required String orderId
+  }) {
+    Navigator.push(
+      context, 
+      CupertinoPageRoute(
+        builder: (BuildContext context) {
+          return OrderPage(
+            orderId: orderId
+          );
+        }
+      )
+    );
   }
 
   @override
@@ -63,6 +81,10 @@ class ProfileOrdersPage extends StatelessWidget {
             vertical: 7.0,
           ),
           child: UserOrderCard(
+            cardTap: (String orderId) => goOrderPage(
+                context: context,
+                orderId: orderId
+            ),
             order: orders[index] 
           ),
         );

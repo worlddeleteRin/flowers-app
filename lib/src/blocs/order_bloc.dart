@@ -40,7 +40,9 @@ class OrderBloc {
     DeliveryMethod? delivery_method = checkoutForm.delivery_method;
     UserDeliveryAddress? delivery_address = checkoutForm.delivery_address;
     String custom_message = checkoutForm.custom_message;
+    String postcard_text = checkoutForm.postcard_text;
     String recipient_type = checkoutForm.recipient_type;
+    DateTime? delivery_datetime = checkoutForm.delivery_datetime;
     RecipientPerson recipient_person = checkoutForm.recipient_person; 
 
     if (!(payment_method is PaymentMethod)) {return false;};
@@ -55,14 +57,28 @@ class OrderBloc {
       delivery_method: delivery_method.id,
       delivery_address: delivery_address?.id,
       custom_message: custom_message,
+      postcard_text: postcard_text,
       recipient_type: recipient_type,
       recipient_person: recipient_person,
+      delivery_datetime: delivery_datetime,
     );
     if (response.statusCode == 200) {
       processOrderCreatedResponse(response); 
       return true;
     }
     return false;
+  }
+
+  Future<Order?> fetchOrder(String orderId) async {
+    String? authToken = userBloc.authTokenLastValue;
+    if (!(authToken is String)) { return null;}
+    Response response = await orderAPIProvider.getOrderById(
+        authToken: authToken,
+        orderId: orderId
+    );
+    Order? order = Order.processOrderFromResponse(response);
+    if (!(order is Order)) { return null;};
+    return order;
   }
 
   processOrderCreatedResponse(Response response) {

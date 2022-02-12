@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 Widget SimpleBottomActionContainer({
   required String buttonTitle,
   required Function handleClick,
+  bool disabled = false
 }) {
 
   return SafeArea(
@@ -15,7 +16,8 @@ Widget SimpleBottomActionContainer({
               bottom: 10.0,
             ),
             child: ElevatedButton(
-              onPressed: () => handleClick(),
+              onPressed: disabled ? null : () => handleClick(),
+              // onPressed: null,
               child: Text(
                 "$buttonTitle",
                 style: TextStyle(

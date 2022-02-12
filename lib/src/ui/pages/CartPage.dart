@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:myapp/src/blocs/cart_bloc.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/cart_model.dart';
+import 'package:myapp/src/ui/components/appbar/PhoneBadge.dart';
 // import 'package:myapp/src/models/catalogue_model.dart';
 import 'package:myapp/src/ui/components/cart/CartEmptyBlock.dart';
 import 'package:myapp/src/ui/components/cart/CartLineItems.dart';
@@ -102,6 +103,9 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Корзина'),
+        actions: [
+          PhoneBadge(context: context),
+        ]
       ),
       body: SafeArea(
         child: StreamBuilder(

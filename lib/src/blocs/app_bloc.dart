@@ -16,12 +16,17 @@ class AppBloc {
   BehaviorSubject _sessionIdFetcher = BehaviorSubject();
   BehaviorSubject _stocksFetcher = BehaviorSubject();
   BehaviorSubject _checkoutInfoFetcher = BehaviorSubject();
+  BehaviorSubject<CommonInfo> _commonInfo = BehaviorSubject<CommonInfo>();
 
   Stream get checkoutInfo => _checkoutInfoFetcher.stream;
   Stream get sessionId => _sessionIdFetcher.stream;
   dynamic get sessionIdValue => _sessionIdFetcher.value;
   Stream get stocks => _stocksFetcher.stream;
+  Stream<CommonInfo> get commonInfo => _commonInfo.stream;
 
+  Sink<CommonInfo> get commonInfoSink => _commonInfo.sink;
+
+  CommonInfo? get commonInfoLastValue => _commonInfo.valueOrNull;
 
   bool stocksFetched = false;
   bool checkoutInfoFetched = false;
@@ -54,6 +59,18 @@ class AppBloc {
       String response_sessionId = await appAPIProvider.getSessionId();
       _sessionIdFetcher.sink.add(response_sessionId);
       return response_sessionId;
+    } on Exception {
+      throw Exception();
+    }
+  }
+
+  Future fetchCommonInfo() async {
+    try {
+      Response response = await appAPIProvider.getCommonInfo();
+      CommonInfo? commonInfo = CommonInfo.processFromResponse(response);
+      print('common info is ${commonInfo}');
+      if (!(commonInfo is CommonInfo)) {return null;}
+      commonInfoSink.add(commonInfo);
     } on Exception {
       throw Exception();
     }

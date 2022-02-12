@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:myapp/src/models/catalogue_model.dart';
+import 'package:myapp/src/ui/components/appbar/PhoneBadge.dart';
 import 'package:myapp/src/ui/components/cart/CartIconBadge.dart';
 import 'package:myapp/src/ui/components/common/NavigationTitle.dart';
 import 'package:myapp/src/ui/components/products/HorizontalCategories.dart';
@@ -71,7 +72,8 @@ class _HomePageState extends State<HomePage>{
         appBar: AppBar(
           title: Text('Главная'),
           actions: [
-            CartIconBadge(context: context),
+            PhoneBadge(context: context),
+            CartIconBadge(context: context)
           ]
         ),
         body: SafeArea(

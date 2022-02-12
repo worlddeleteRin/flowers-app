@@ -67,6 +67,7 @@ OutlinedButtonThemeData outlineButtonTheme = OutlinedButtonThemeData(
 // elevated button theme data
 ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
   style: ButtonStyle(
+    enableFeedback: true,
     textStyle: MaterialStateProperty.all<TextStyle?>(
       TextStyle(
         fontWeight: FontWeight.w600,
@@ -77,6 +78,9 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
         if (states.contains(MaterialState.pressed)) {
           return buttonElevatedForegroundColor.withOpacity(0.7);
         }
+        if (states.contains(MaterialState.disabled)) {
+          return buttonElevatedForegroundColor.withOpacity(0.5);
+        }
         return buttonElevatedForegroundColor;
       }
     ),
@@ -84,6 +88,9 @@ ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
       (Set<MaterialState> states) {
         if (states.contains(MaterialState.pressed)) {
           return buttonElevatedBackgroundColor.withOpacity(0.7);
+        }
+        if (states.contains(MaterialState.disabled)) {
+          return buttonElevatedBackgroundColor.withOpacity(0.5);
         }
         return buttonElevatedBackgroundColor;
       }

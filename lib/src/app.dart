@@ -51,13 +51,18 @@ class _AppState extends State<App> {
 
   initializeApp () async {
     print('start app initialization');
-    // await Future.delayed(Duration(seconds: 1));
-    await appBloc.checkGetSessionId(); 
-    // await Future.delayed(Duration(seconds: 1));
-    print('get cart');
-    await cartBloc.fetchCart();
-    // await Future.delayed(Duration(seconds: 1));
-    await userBloc.checkAuthTokenGetUser();
+    try {
+      await appBloc.fetchCommonInfo();
+      // await Future.delayed(Duration(seconds: 1));
+      await appBloc.checkGetSessionId(); 
+      // await Future.delayed(Duration(seconds: 1));
+      print('get cart');
+      await cartBloc.fetchCart();
+      // await Future.delayed(Duration(seconds: 1));
+      await userBloc.checkAuthTokenGetUser();
+    } on Exception {
+      return true;
+    }
     return true;
   }
 

@@ -4,21 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:myapp/src/blocs/order_bloc.dart';
 import 'package:myapp/src/models/app_model.dart';
 import 'package:myapp/src/ui/components/common/SimpleBottomActionContainer.dart';
+import 'package:myapp/src/ui/components/common/SimpleErrorTile.dart';
 import 'package:rxdart/rxdart.dart';
 
-class PopupAddOrderComments extends StatelessWidget { 
+class PopupOrderPostcard extends StatelessWidget { 
 
-  final _orderComment = 
+  final _orderPostcard = 
   BehaviorSubject<String>.seeded('');
 
-  Stream<String> get orderComment =>
-  _orderComment.stream;
+  Stream<String> get orderPostcard =>
+  _orderPostcard.stream;
 
-  Sink<String> get orderCommentSink =>
-  _orderComment.sink;
+  Sink<String> get orderPostcardSink =>
+  _orderPostcard.sink;
 
-  String? get orderCommentLastValue =>
-  _orderComment.valueOrNull;
+  String? get orderPostcardLastValue =>
+  _orderPostcard.valueOrNull;
 
   closePopup({
     required BuildContext context
@@ -26,12 +27,12 @@ class PopupAddOrderComments extends StatelessWidget {
     Navigator.pop(context);
   }
 
-  saveOrderComment ({
+  saveOrderPostcard ({
     required CheckoutFormInfo checkoutFormInfo,
   }) {
-    String? orderComment = orderCommentLastValue;
-    if (!(orderComment is String)) {return null;};
-    checkoutFormInfo.custom_message = orderComment;
+    String? orderPostcard = orderPostcardLastValue;
+    if (!(orderPostcard is String)) {return null;};
+    checkoutFormInfo.postcard_text = orderPostcard;
     orderBloc.checkoutFormInfo.sink.add(
       checkoutFormInfo 
     );
@@ -40,12 +41,12 @@ class PopupAddOrderComments extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-      return PopupAddOrderCommentsContent (
+      return PopupOrderPostcardsContent (
         context: context
       );
   }
 
-  Widget PopupAddOrderCommentsContent ({
+  Widget PopupOrderPostcardsContent ({
     required BuildContext context
   }) {
     return StreamBuilder(
@@ -54,8 +55,8 @@ class PopupAddOrderComments extends StatelessWidget {
         if (snapshot.hasData &
         (snapshot.data is CheckoutFormInfo)) {
           CheckoutFormInfo checkoutFormInfo = snapshot.data;
-          String custom_message = checkoutFormInfo.custom_message;
-          orderCommentSink.add(custom_message);
+          String postcard_text = checkoutFormInfo.postcard_text;
+          orderPostcardSink.add(postcard_text);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -66,14 +67,14 @@ class PopupAddOrderComments extends StatelessWidget {
                 ),
                 height: 160.0,
                 child: TextFormField(
-                  initialValue: custom_message,
+                  initialValue: checkoutFormInfo.postcard_text,
                   decoration: const InputDecoration(
-                    hintText: 'Укажите комментарий к заказу',
+                    hintText: 'Укажите текст открытки',
                     border: InputBorder.none,
                   ),
                   onChanged: (String? newValue) {
                     if (!(newValue is String)) { return;};
-                    orderCommentSink.add(newValue);
+                    orderPostcardSink.add(newValue);
                   },
                   maxLines: 4,
                 ),
@@ -85,7 +86,7 @@ class PopupAddOrderComments extends StatelessWidget {
                 ),
                 child: SimpleBottomActionContainer(
                   handleClick: () {
-                    saveOrderComment(
+                    saveOrderPostcard(
                       checkoutFormInfo: checkoutFormInfo, 
                     );
                     closePopup(context: context);
@@ -96,7 +97,9 @@ class PopupAddOrderComments extends StatelessWidget {
             ]
           );
         }
-        return Text('test content');
+        return SimpleErrorTile(
+          title: "Ошибка при загрузке данных"
+        );
       }
     );
   }

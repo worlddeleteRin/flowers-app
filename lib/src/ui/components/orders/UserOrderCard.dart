@@ -4,43 +4,49 @@ import 'package:myapp/src/models/orders_model.dart';
 
 class UserOrderCard extends StatelessWidget {
   final Order order;
+  final Function cardTap;
+
   UserOrderCard({
-    required this.order
+    required this.order,
+    required this.cardTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 14.0,
-        vertical: 14.0,
+    return GestureDetector(
+        onTap: () => cardTap(order.id),
+        child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 14.0,
+          vertical: 14.0,
+        ),
+        decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.05),
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.all(
+              Radius.circular(15.0)
+            )
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            OrderDateBlock(),
+            SizedBox(height: 5.0),
+            OrderStatusBlock(),
+            SizedBox(height: 5.0),
+            OrderDeliveryMethodBlock(),
+            SizedBox(height: 5.0),
+            OrderDeliveryAddressBlock(),
+            SizedBox(height: 5.0),
+            OrderCartItemsImages(),
+          ]
+        )
       ),
-      decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.05),
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.all(
-            Radius.circular(15.0)
-          )
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          OrderDateBlock(),
-          SizedBox(height: 5.0),
-          OrderStatusBlock(),
-          SizedBox(height: 5.0),
-          OrderDeliveryMethodBlock(),
-          SizedBox(height: 5.0),
-          OrderDeliveryAddressBlock(),
-          SizedBox(height: 5.0),
-          OrderCartItemsImages(),
-        ]
-      )
     );
   }
 
   Widget OrderDateBlock() {
-    DateTime? date = DateTime.tryParse(order.date_created);
+    DateTime? date = order.date_created;
     String dateEmptyString = "Заказ от []";
     String dateString = "Заказ от ${date?.day}.${date?.month}.${date?.year}";
     return Text(
