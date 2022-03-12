@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:myapp/src/blocs/user_bloc.dart';
 import 'package:myapp/src/models/user_model.dart';
 import 'package:myapp/src/ui/components/common/PageLoadingCenter.dart';
+import 'package:myapp/src/ui/pages/AboutUsPage.dart';
 import 'package:myapp/src/ui/pages/CartPage.dart';
 import 'package:myapp/src/ui/pages/CataloguePage.dart';
 import 'package:myapp/src/ui/pages/ProfilePage.dart';
@@ -141,6 +142,8 @@ class _AppState extends State<App> {
               }
             );
           case 1:
+          /*
+            prev. was catalogue page
             return CupertinoTabView(
               routes: appRoutes,
               navigatorKey: navigatorKeyList[1], 
@@ -148,6 +151,14 @@ class _AppState extends State<App> {
                 return CataloguePage();
               }
             );
+          */
+          return CupertinoTabView(
+            routes: appRoutes,
+            navigatorKey: navigatorKeyList[1], 
+            builder: (BuildContext context) {
+              return AboutUsPage();
+            }
+          );
           case 2:
             return CupertinoTabView(
               routes: appRoutes,
@@ -174,7 +185,8 @@ class _AppState extends State<App> {
   List<BottomNavigationBarItem> BottomMainNavigationItems () {
     final bottomNavigationList = [
       {"icon": Icon(Icons.store), "label": "Главная"},
-      {"icon": Icon(Icons.grid_view), "label": "Каталог"},
+      {"icon": Icon(Icons.notes_rounded), "label": "О Нас"},
+      // {"icon": Icon(Icons.grid_view), "label": "Каталог"},
       {"icon": Icon(Icons.local_offer_rounded), "label": "Акции"},
       {"icon": Icon(Icons.account_circle_rounded), "label": "Профиль"},
     ];

@@ -82,7 +82,7 @@ class CheckoutFormInfo {
   UserDeliveryAddress? delivery_address;
   String custom_message = '';
   String postcard_text = '';
-  String recipient_type = 'user';
+  String recipient_type = RecipientTypes.user;
   DateTime? delivery_datetime;
   RecipientPerson recipient_person = RecipientPerson(
     name: "",
@@ -97,6 +97,77 @@ class CheckoutFormInfo {
     }
     return true;
   }
+
+  CheckoutFormFieldError recipientError() {
+    CheckoutFormFieldError error = CheckoutFormFieldError();
+    if (recipient_type == '') {
+      error.hasError = true;
+      error.message = 'Выберите получателя';
+    }
+    if (
+      (recipient_type == RecipientTypes.other_person) &&
+      !(recipient_person.isValid())
+    ) {
+      error.hasError = true;
+      error.message = 'Корректно укажите данные получателя';
+    }
+    return error;
+  }
+
+  CheckoutFormFieldError deliveryMethodError() {
+    CheckoutFormFieldError error = CheckoutFormFieldError();
+    if (delivery_method == null) {
+      error.hasError = true;
+      error.message = 'Выберите способ доставки';
+    }
+    return error;
+  }
+
+  CheckoutFormFieldError  deliveryDateError() {
+    CheckoutFormFieldError error = CheckoutFormFieldError();
+    if (delivery_datetime == null) {
+      error.hasError = true;
+      error.message = 'Укажите дату и время доставки';
+    }
+    return error;
+  }
+
+  CheckoutFormFieldError  deliveryAddressError() {
+    CheckoutFormFieldError delivery_method_error = deliveryMethodError();
+    if (delivery_method_error.hasError) {
+      return delivery_method_error;
+    }
+    CheckoutFormFieldError error = CheckoutFormFieldError();
+    // pickup or delivery
+    if (
+      (delivery_method?.id == 'delivery') && 
+      (delivery_address == null)
+    ) {
+      error.hasError = true;
+      error.message = 'Выберите адрес доставки';
+    }
+    return error;
+  }
+
+  CheckoutFormFieldError  paymentMethodError () {
+    CheckoutFormFieldError error = CheckoutFormFieldError();
+    if (payment_method == null) {
+      error.hasError = true;
+      error.message = 'Выберите способ оплаты';
+    }
+    return error;
+  }
+
+}
+
+class CheckoutFormFieldError {
+  bool hasError;
+  String message;
+
+  CheckoutFormFieldError({
+    this.hasError = false,
+    this.message = ''
+  });
 }
 
 class StockItem {

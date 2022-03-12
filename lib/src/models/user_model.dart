@@ -56,6 +56,17 @@ class RecipientPerson {
       "phone": this.phone,
     };
   }
+
+  bool isValid () {
+    if (
+      (name.length == 0) ||
+      (phone.length != 11)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
 }
 
 class UserDeliveryAddress {

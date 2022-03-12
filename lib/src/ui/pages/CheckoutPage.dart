@@ -16,6 +16,7 @@ import 'package:myapp/src/ui/components/common/DraggableBaseSelectBottomSheet.da
 import 'package:myapp/src/ui/components/common/SelectableListTile.dart';
 import 'package:myapp/src/ui/components/common/SimpleBottomActionContainer.dart';
 import 'package:myapp/src/ui/components/common/SimpleErrorTile.dart';
+import 'package:myapp/src/ui/components/common/SimpleInputErrorLabel.dart';
 import 'package:myapp/src/utils/datetime.dart';
 
 class CheckoutPage extends StatelessWidget {
@@ -194,6 +195,11 @@ class CheckoutPage extends StatelessWidget {
             textAlign: TextAlign.end,
           )
         ),
+        // recipient error
+        if (checkoutFormInfo.recipientError().hasError)
+          SimpleInputErrorLabel(
+            title: checkoutFormInfo.recipientError().message
+          ),
         // delivery method
         SelectableListTile(
           handleTap: () => openSelectBottomSheet(
@@ -208,6 +214,11 @@ class CheckoutPage extends StatelessWidget {
             textAlign: TextAlign.end,
           )
         ),
+        // delivery method error
+        if (checkoutFormInfo.deliveryMethodError().hasError)
+          SimpleInputErrorLabel(
+            title: checkoutFormInfo.deliveryMethodError().message
+          ),
         // eof delivery method
         // delivery date
         SelectableListTile(
@@ -223,22 +234,36 @@ class CheckoutPage extends StatelessWidget {
             textAlign: TextAlign.end,
           )
         ),
+        // delivery date error
+        if (checkoutFormInfo.deliveryDateError().hasError)
+          SimpleInputErrorLabel(
+            title: checkoutFormInfo.deliveryDateError().message
+          ),
         // eof delivery date
-        SelectableListTile(
-          handleTap: () => openSelectBottomSheet(
-            context: context,
-            contentWidget: SelectDeliveryAddress(),
-          ), 
-          title: "Адрес доставки",
-          trailingBody: Text(
-            delivery_address == null ? 
-            'Выбрать':
-            '$delivery_address',
-            softWrap: false,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.end,
-          )
-        ),
+        // delivery address
+        if (checkoutFormInfo.delivery_method?.id == 'delivery')
+          SelectableListTile(
+            handleTap: () => openSelectBottomSheet(
+              context: context,
+              contentWidget: SelectDeliveryAddress(),
+            ), 
+            title: "Адрес доставки",
+            trailingBody: Text(
+              delivery_address == null ? 
+              'Выбрать':
+              '$delivery_address',
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+            )
+          ),
+        if (checkoutFormInfo.delivery_method?.id == 'delivery')
+          // delivery date error
+          if (checkoutFormInfo.deliveryAddressError().hasError)
+            SimpleInputErrorLabel(
+              title: checkoutFormInfo.deliveryAddressError().message
+            ),
+        // eof delivery address
         SelectableListTile(
           handleTap: () => openSelectBottomSheet(
             context: context,
@@ -275,6 +300,7 @@ class CheckoutPage extends StatelessWidget {
             fontSize: 18.0,
           )
         ),
+        // payment method
         SelectableListTile(
           handleTap: () => openSelectBottomSheet(
             context: context,
@@ -288,6 +314,12 @@ class CheckoutPage extends StatelessWidget {
             textAlign: TextAlign.end,
           )
         ),
+        // payment method error
+        if (checkoutFormInfo.paymentMethodError().hasError)
+          SimpleInputErrorLabel(
+            title: checkoutFormInfo.paymentMethodError().message
+          ),
+        // eof payment method
       ]
     );
   }
